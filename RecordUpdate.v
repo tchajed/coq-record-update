@@ -2,12 +2,12 @@ Local Definition Reader E T := E -> T.
 
 Local Definition get {E} : Reader E E := fun e => e.
 
-Local Definition pure {E T} (x:T) : Reader E T := fun _ => x.
+Definition pure {E T} (x:T) : Reader E T := fun _ => x.
 
-Local Definition ap {E A B} (f: Reader E (A -> B)) : Reader E A -> Reader E B :=
+Definition ap {E A B} (f: Reader E (A -> B)) : Reader E A -> Reader E B :=
   fun x => fun e => f e (x e).
 
-Local Infix "<*>" := (ap) (at level 11, left associativity).
+Infix "<*>" := (ap) (at level 11, left associativity).
 
 (** Updateable is a way of accessing a constructor for a record of type T. The
 syntactic form of this definition is important: it must be an eta-expanded
