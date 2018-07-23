@@ -14,24 +14,42 @@ Definition bind {E T T'} (x: Reader E T) (f: T -> Reader E T') : Reader E T' :=
 
 Notation "f =<< x" := (bind x f) (at level 0).
 
-Ltac prove_updater_ok :=
+Ltac updater etaT proj :=
+  let set :=
+      (match eval pattern proj in etaT with
+       | ?updater ?proj => constr:(fun x => updater (pure x))
+       end) in
+  let set := (eval cbv [pure ap] in set) in
+  exact set.
+
+Class Updateable T := { mkT: Reader T T;
+                        mkT_ok: forall x, mkT x = get x }.
+Arguments mkT T mk : clear implicits, rename.
+
+Ltac prove_mkT_ok :=
   match goal with
   | |- forall x, _ = _ =>
     solve [ destruct x; cbv; f_equal ]
   end || fail "updater appears to change record".
 
-Ltac updater t proj :=
-  let t := eval hnf in t in
-  let set :=
-      (match eval pattern proj in t with
-       | ?updater ?getter => constr:(fun x => updater (pure x))
-       end) in
-  let set := (eval cbv [pure ap] in set) in
-  exact set.
+Ltac mkUpdateable e :=
+  refine {| mkT := e |};
+  (match goal with
+   | |- forall x, _ = _ => solve [ destruct x; cbv; f_equal ]
+   end).
 
-Tactic Notation "_updater" constr(t) constr(proj) := updater t proj.
+Notation mkUpdateable e := (ltac:(mkUpdateable e)) (only parsing).
 
-Notation mkUpdater x proj := ltac:(_updater x proj).
+Notation set T FA :=
+  (ltac:(match constr:(mkT T _) with
+         | mkT _ ?updateable =>
+           let updateable := (eval hnf in updateable) in
+           match updateable with
+           | {| mkT := ?mk |} =>
+             updater mk FA
+           end
+         end))
+    (only parsing).
 
 Module Example.
 
@@ -39,16 +57,9 @@ Module Example.
                     B: nat;
                     C: unit; }.
 
-  Class Recordy T := mkT : Reader T T.
-  Arguments mkT T mk : clear implicits, rename.
-
-  Instance etaX : Recordy X := pure mkX <*> A <*> B <*> C.
-
-  Notation set T FA :=
-    (ltac:(match constr:(mkT T _) with
-          | mkT _ ?mk => updater mk FA
-          end)) (only parsing).
+  Instance etaX : Updateable _ := mkUpdateable (pure mkX <*> A <*> B <*> C).
 
   Definition setA := set X A.
+  Print setA.
 
 End Example.
