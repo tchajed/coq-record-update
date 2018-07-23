@@ -1,13 +1,4 @@
-Local Definition Reader E T := E -> T.
-
-Local Definition get {E} : Reader E E := fun e => e.
-
-Definition pure {E T} (x:T) : Reader E T := fun _ => x.
-
-Definition ap {E A B} (f: Reader E (A -> B)) : Reader E A -> Reader E B :=
-  fun x => fun e => f e (x e).
-
-Infix "<*>" := (ap) (at level 11, left associativity).
+Require Export ReaderApplicative.
 
 (** Updateable is a way of accessing a constructor for a record of type T. The
 syntactic form of this definition is important: it must be an eta-expanded
@@ -26,7 +17,7 @@ Local Ltac mkUpdateable e :=
 
 (** mkUpdateable creates an instance of Updateable from an expression like [pure
 mkX <*> A <*> B <*> C] *)
-Local Notation mkUpdateable e := (ltac:(mkUpdateable e)) (only parsing).
+Notation mkUpdateable e := (ltac:(mkUpdateable e)) (only parsing).
 
 (** [updater] creates a setter based on an eta-expanded record constructor and a
 particular field projection proj *)
@@ -62,6 +53,8 @@ Local Ltac getSetter proj :=
 
 The record type T that [proj] accesses should have an instance Updateable T. *)
 Notation set proj := (ltac:(getSetter proj)) (only parsing).
+
+Ltac set_tac proj := getSetter proj.
 
 Module Example.
 

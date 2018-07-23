@@ -1,5 +1,5 @@
 V_FILES := $(wildcard *.v)
-VO_FILES := $(V_FILE:.v=vo)
+VO_FILES := $(V_FILES:.v=.vo)
 
 default: $(VO_FILES)
 
