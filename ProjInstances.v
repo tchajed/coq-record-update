@@ -21,7 +21,7 @@ Notation "x [ proj := v ]" := (set proj v x)
                                 (at level 12, left associativity,
                                 format "x [ proj  :=  v ]").
 
-Module Examples.
+Module SimpleExample.
 
   Record X := mkX { A: nat;
                     B: nat;
@@ -34,6 +34,22 @@ Module Examples.
   Instance fC: Setter C := SetInstance.
 
   Definition setAB a b x := x[A := a][B := b].
-  Print setAB.
 
-End Examples.
+End SimpleExample.
+
+Module IndexedType.
+  Record X {T} := mkX { A: T;
+                        B: T;
+                        C: unit }.
+  Arguments X T : clear implicits.
+
+  Instance etaX T: Updateable (X T) :=
+    mkUpdateable (pure (mkX (T:=T)) <*> A <*> B <*> C).
+
+  Instance fA T : Setter (@A T) := SetInstance.
+  Instance fB T : Setter (@B T) := SetInstance.
+  Instance fC T : Setter (@C T) := SetInstance.
+
+  Definition setAB T a b (x: X T) := x[A := a][B := b].
+
+End IndexedType.
