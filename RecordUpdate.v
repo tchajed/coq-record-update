@@ -1,5 +1,7 @@
 Require Export ReaderApplicative.
 
+Set Implicit Arguments.
+
 (** Updateable is a way of accessing a constructor for a record of type T. The
 syntactic form of this definition is important: it must be an eta-expanded
 version of T's constructor, written generically over the field accessors of T.
@@ -49,22 +51,47 @@ Local Ltac getSetter proj :=
            end in
   getSetter' T proj.
 
-(* [set proj] is a sets the field projected by [proj].
+Class Setter {R T} (proj: R -> T) :=
+  { set: T -> R -> R;
+    set_get: forall v r, proj (set v r) = v;
+    set_eq: forall r, set (proj r) r = r; }.
 
-The record type T that [proj] accesses should have an instance Updateable T. *)
-Notation set proj := (ltac:(getSetter proj)) (only parsing).
+Arguments set {R T} proj {Setter}.
 
-Ltac set_tac proj := getSetter proj.
+Notation "x [ proj := v ]" := (set proj v x)
+                                (at level 12, left associativity,
+                                 format "x [ proj  :=  v ]").
 
-Module Example.
+Ltac SetInstance_t :=
+  match goal with
+  | |- Setter ?A => unshelve eapply Build_Setter;
+                  [ getSetter A | intros ? r; destruct r | intros r; destruct r ];
+                  intros; reflexivity
+  end.
 
-  Record X := mkX { A : nat;
+Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
+
+Module SimpleExample.
+
+  Record X := mkX { A: nat;
                     B: nat;
-                    C: unit; }.
+                    C: unit }.
 
   Instance etaX : Updateable _ := mkUpdateable (pure mkX <*> A <*> B <*> C).
 
-  Definition setA := set A.
-  Print setA.
+  Definition setAB a b x := x[A := a][B := b].
 
-End Example.
+End SimpleExample.
+
+Module IndexedType.
+  Record X {T} := mkX { A: T;
+                        B: T;
+                        C: unit }.
+  Arguments X T : clear implicits.
+
+  Instance etaX T: Updateable (X T) :=
+    mkUpdateable (pure (mkX (T:=T)) <*> A <*> B <*> C).
+
+  Definition setAB T a b (x: X T) := x[A := a][B := b].
+
+End IndexedType.

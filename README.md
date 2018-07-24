@@ -4,4 +4,4 @@ Coq has no record update syntax, nor does it create updaters for setting individ
 
 To use the library with a record, one must implement a typeclass `Updateable` to provide the syntax for constructing a record from individual fields. This implementation lists out the record's constructor and every field accessor function.
 
-Once `Updateable T` is implemented `set proj` for each projection function `proj: T -> F` of the record `T` will create a setter for that field (using Ltac via tactics-in-terms), with type `F -> T -> T`.
+Once `Updateable T` is implemented, Coq will be able to resolve the typeclass `Setter F` for all the fields `F` of `T`, so that a generic setter `set T A (F: T -> A) : forall {_:Setter F}, A -> T -> T` works. There is also a notation `x [proj := v]` for calling `set proj v x`.
