@@ -8,18 +8,18 @@ Class Setter {R T} (proj: R -> T) :=
     set_eq: forall r, set (proj r) r = r; }.
 Arguments set {R T} proj {Setter}.
 
+Notation "x [ proj := v ]" := (set proj v x)
+                                (at level 12, left associativity,
+                                 format "x [ proj  :=  v ]").
+
 Ltac SetInstance_t :=
   match goal with
   | |- Setter ?A => unshelve eapply Build_Setter;
                   [ set_tac A | intros ? r; destruct r | intros r; destruct r ];
-                  intros; simpl; eauto
+                  intros; reflexivity
   end.
 
-Notation SetInstance := ltac:(SetInstance_t) (only parsing).
-
-Notation "x [ proj := v ]" := (set proj v x)
-                                (at level 12, left associativity,
-                                format "x [ proj  :=  v ]").
+Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
 
 Module SimpleExample.
 
@@ -28,10 +28,6 @@ Module SimpleExample.
                     C: unit }.
 
   Instance etaX : Updateable _ := mkUpdateable (pure mkX <*> A <*> B <*> C).
-
-  Instance fA: Setter A := SetInstance.
-  Instance fB: Setter B := SetInstance.
-  Instance fC: Setter C := SetInstance.
 
   Definition setAB a b x := x[A := a][B := b].
 
@@ -45,10 +41,6 @@ Module IndexedType.
 
   Instance etaX T: Updateable (X T) :=
     mkUpdateable (pure (mkX (T:=T)) <*> A <*> B <*> C).
-
-  Instance fA T : Setter (@A T) := SetInstance.
-  Instance fB T : Setter (@B T) := SetInstance.
-  Instance fC T : Setter (@C T) := SetInstance.
 
   Definition setAB T a b (x: X T) := x[A := a][B := b].
 
