@@ -36,5 +36,5 @@ Module DependentExample.
   Instance etaX : Settable X :=
     mkSettable (pure mkX <*> T <*> A <*> B).
 
-  Definition setB x b := x[B := b].
+  Definition setB b x := x[B := b].
 End DependentExample.
