@@ -6,4 +6,4 @@ default: $(VO_FILES)
 %.vo: %.v
 	coqc -q $< -o $@
 
-Examples.vo: RecordUpdate.vo
+Examples.vo: RecordSet.vo

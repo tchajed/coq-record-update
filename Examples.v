@@ -1,4 +1,4 @@
-Require Import RecordUpdate.
+Require Import RecordSet.
 Import RecordSetNotations.
 
 Set Implicit Arguments.
