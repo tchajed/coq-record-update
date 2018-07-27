@@ -2,13 +2,17 @@ Set Implicit Arguments.
 
 (** Reader is the reader monad (or just the function monad). We only use
 Applicative here. *)
-Definition Reader E T := E -> T.
+Definition Reader E T := forall (e:E), T e.
+Arguments Reader : clear implicits.
 
-Definition pure {E T} (x:T) : Reader E T := fun _ => x.
+Definition pure {E T} (x:T) : Reader E (fun _ => T) := fun _ => x.
 
-Definition ap {E A B} (f: Reader E (A -> B)) : Reader E A -> Reader E B :=
+Definition ap {E}
+           {A: E -> Type}
+           {B: forall (e:E), A e -> Type}
+           (f: Reader E (fun e => forall (a:A e), B e a)) :
+  forall (x: Reader E A), Reader E (fun e => B e (x e))  :=
   fun x => fun e => f e (x e).
-
 Infix "<*>" := (ap) (at level 11, left associativity).
 
 (** Settable is a way of accessing a constructor for a record of type T. The
@@ -16,8 +20,8 @@ syntactic form of this definition is important: it must be an eta-expanded
 version of T's constructor, written generically over the field accessors of T.
 The best way to do this for a record X := mkX { A; B; C} is [pure mkX <*> A <*>
 B <*> C]. *)
-Class Settable T := { mkT: Reader T T;
-                        mkT_ok: forall x, mkT x = x }.
+Class Settable T := { mkT: Reader T (fun _ => T);
+                      mkT_ok: forall x, mkT x = x }.
 Arguments mkT T mk : clear implicits, rename.
 
 Local Ltac mkSettable e :=

@@ -27,3 +27,14 @@ Module IndexedType.
   Definition setAB T a b (x: X T) := x[A := a][B := b].
 
 End IndexedType.
+
+Module DependentExample.
+  Record X := mkX { T: Type;
+                    A: T;
+                    B: nat }.
+
+  Instance etaX : Settable X :=
+    mkSettable (pure mkX <*> T <*> A <*> B).
+
+  Definition setB x b := x[B := b].
+End DependentExample.
