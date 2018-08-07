@@ -1,9 +1,17 @@
-V_FILES := $(wildcard *.v)
-VO_FILES := $(V_FILES:.v=.vo)
+default: RecordSet.vo
 
-default: $(VO_FILES)
+examples: Examples.vo
 
-%.vo: %.v
-	coqc -q $< -o $@
+Makefile.coq: _CoqProject
+	coq_makefile -f _CoqProject -o $@
 
-Examples.vo: RecordSet.vo
+%.vo: %.v Makefile.coq
+	make -f Makefile.coq $@
+
+clean:
+	make -f Makefile.coq clean
+
+install:
+	make -f Makefile.coq install
+
+.PHONY: default examples clean install
