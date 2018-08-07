@@ -11,7 +11,7 @@ Makefile.coq: _CoqProject
 clean:
 	make -f Makefile.coq clean
 
-install:
+install: RecordSet.vo
 	make -f Makefile.coq install
 
 .PHONY: default examples clean install
