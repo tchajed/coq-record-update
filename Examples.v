@@ -12,6 +12,7 @@ Module SimpleExample.
   Instance etaX : Settable _ := mkSettable (pure mkX <*> A <*> B <*> C).
 
   Definition setAB a b x := x[A := a][B := b].
+  Definition updateAB a b x := x[A ::= plus a][B ::= minus b].
 
 End SimpleExample.
 

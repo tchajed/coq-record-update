@@ -39,7 +39,7 @@ particular field projection proj *)
 Local Ltac setter etaT proj :=
   let set :=
       (match eval pattern proj in etaT with
-       | ?setter ?proj => constr:(fun x => setter (pure x))
+       | ?setter ?proj => constr:(fun f => setter (fun r => f (proj r)))
        end) in
   let set := (eval cbv [pure ap] in set) in
   exact set.
@@ -60,9 +60,9 @@ Local Ltac get_setter T proj :=
 with correctness conditions that require the projected field and only the
 projected field is modified. *)
 Class Setter {R T} (proj: R -> T) :=
-  { set: T -> R -> R;
-    set_get: forall v r, proj (set v r) = v;
-    set_eq: forall r, set (proj r) r = r; }.
+  { set: (T -> T) -> R -> R;
+    set_get: forall v r, proj (set v r) = v (proj r);
+    set_eq: forall r, set (fun x => x) r = r; }.
 
 Arguments set {R T} proj {Setter}.
 
@@ -76,7 +76,8 @@ Ltac SetInstance_t :=
 Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
 
 Module RecordSetNotations.
-  Notation "x [ proj := v ]" := (set proj v x)
-                                  (at level 12, left associativity,
-                                   format "x [ proj  :=  v ]").
+  Notation "x [ proj  :=  v ]" := (set proj (pure v) x)
+                                    (at level 12, left associativity).
+  Notation "x [ proj  ::=  f ]" := (set proj f x)
+                                     (at level 12, f at next level, left associativity).
 End RecordSetNotations.
