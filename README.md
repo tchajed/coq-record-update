@@ -1,5 +1,7 @@
 # Coq record update library
 
+[![Build Status](https://travis-ci.org/tchajed/coq-record-update.svg?branch=master)](https://travis-ci.org/tchajed/coq-record-update)
+
 In a nutshell, this library automatically provides a generic way to update record fields. Here's a teaser example:
 
 ```coq
