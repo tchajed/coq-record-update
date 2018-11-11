@@ -69,8 +69,12 @@ Arguments set {R T} proj {Setter}.
 Ltac SetInstance_t :=
   match goal with
   | |- @Setter ?T _ ?A => unshelve eapply Build_Setter;
-                  [ get_setter T A | intros ? r; destruct r | intros r; destruct r ];
-                  intros; reflexivity
+                        [ get_setter T A |
+                          let r := fresh in
+                          intros ? r; destruct r |
+                          let r := fresh in
+                          intros r; destruct r ];
+                        intros; reflexivity
   end.
 
 Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
