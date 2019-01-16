@@ -4,6 +4,8 @@ TEST_VFILES := $(shell find -L 'src' -name "*Tests.v")
 PROJ_VFILES := $(shell find -L 'src' -name "*.v")
 VFILES := $(filter-out $(TEST_VFILES),$(PROJ_VFILES))
 
+COQ_ARGS := -w +all -w -undeclared-scope,-auto-template
+
 default: $(VFILES:.v=.vo)
 test: $(TEST_VFILES:.v=.vo) $(VFILES:.v=.vo)
 
@@ -30,7 +32,7 @@ endif
 
 %.vo: %.v _CoqProject
 	@echo "COQC $<"
-	@coqc $(shell cat '_CoqProject') $< -o $@
+	@coqc $(COQ_ARGS) $(shell cat '_CoqProject') $< -o $@
 
 clean:
 	@echo "CLEAN vo glob aux"

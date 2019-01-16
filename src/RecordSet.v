@@ -5,15 +5,23 @@ Applicative here. *)
 Definition Reader E T := forall (e:E), T e.
 Arguments Reader : clear implicits.
 
-Definition pure {E T} (x:T) : Reader E (fun _ => T) := fun _ => x.
+(* pure/return *)
+Definition constructor {E T} (x:T) : Reader E (fun _ => T) := fun _ => x.
 
-Definition ap {E}
+(* Applicative's (<*>) (written as `ap`).
+
+This has an awkwardly long name since it's intended to be used infix with
+ *)
+Definition applicative_ap {E}
            {A: E -> Type}
            {B: forall (e:E), A e -> Type}
            (f: Reader E (fun e => forall (a:A e), B e a)) :
   forall (x: Reader E A), Reader E (fun e => B e (x e))  :=
   fun x => fun e => f e (x e).
-Infix "<*>" := (ap) (at level 11, left associativity).
+Module ApplicativeNotations.
+  Delimit Scope settable_scope with set.
+  Infix "<*>" := (applicative_ap) (at level 11, left associativity) : settable_scope.
+End ApplicativeNotations.
 
 (** Settable is a way of accessing a constructor for a record of type T. The
 syntactic form of this definition is important: it must be an eta-expanded
@@ -41,7 +49,7 @@ Local Ltac setter etaT proj :=
       (match eval pattern proj in etaT with
        | ?setter ?proj => constr:(fun f => setter (fun r => f (proj r)))
        end) in
-  let set := (eval cbv [pure ap] in set) in
+  let set := (eval cbv [constructor applicative_ap] in set) in
   exact set.
 
 (* Combining the above, [getSetter'] looks up the eta-expanded version of T with
@@ -80,8 +88,10 @@ Ltac SetInstance_t :=
 Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
 
 Module RecordSetNotations.
-  Notation "x [ proj  :=  v ]" := (set proj (pure v) x)
-                                    (at level 12, left associativity).
+  Delimit Scope record_set with rs.
+  Open Scope rs.
+  Notation "x [ proj  :=  v ]" := (set proj (constructor v) x)
+                                    (at level 12, left associativity) : record_set.
   Notation "x [ proj  ::=  f ]" := (set proj f x)
-                                     (at level 12, f at next level, left associativity).
+                                     (at level 12, f at next level, left associativity) : record_set.
 End RecordSetNotations.

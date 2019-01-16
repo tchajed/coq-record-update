@@ -1,5 +1,5 @@
 Require Import RecordSet.
-Import RecordSetNotations.
+Import ApplicativeNotations RecordSetNotations.
 
 Set Implicit Arguments.
 
@@ -9,7 +9,7 @@ Module SimpleExample.
                     B: nat;
                     C: unit }.
 
-  Instance etaX : Settable _ := mkSettable (pure mkX <*> A <*> B <*> C).
+  Instance etaX : Settable _ := mkSettable (constructor mkX <*> A <*> B <*> C)%set.
 
   Definition setAB a b x := x[A := a][B := b].
   Definition updateAB a b x := x[A ::= plus a][B ::= minus b].
@@ -23,7 +23,7 @@ Module IndexedType.
   Arguments X T : clear implicits.
 
   Instance etaX T: Settable (X T) :=
-    mkSettable (pure (mkX (T:=T)) <*> A <*> B <*> C).
+    mkSettable (constructor (mkX (T:=T)) <*> A <*> B <*> C)%set.
 
   Definition setAB T a b (x: X T) := x[A := a][B := b].
 
@@ -35,7 +35,7 @@ Module DependentExample.
                     B: nat }.
 
   Instance etaX : Settable X :=
-    mkSettable (pure mkX <*> T <*> A <*> B).
+    mkSettable (constructor mkX <*> T <*> A <*> B)%set.
 
   Definition setB b x := x[B := b].
 End DependentExample.
