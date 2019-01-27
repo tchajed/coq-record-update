@@ -28,3 +28,7 @@ To use the library with a record, one must implement a typeclass `Settable` to p
 Once `Settable T` is implemented, Coq will be able to resolve the typeclass `Setter F` for all the fields `F` of `T`, so that a generic setter `set T A (F: T -> A) : forall {_:Setter F}, A -> T -> T` works. There is also a notation `x [proj := v]` for calling `set proj v x`.
 
 As a bonus, the `Setter F` typeclass includes some theorems showing the updater is correct. In addition, `Settable T` has a theorem showing that the fields are listed correctly. Together, these ensure that the library cannot be used incorrectly; for `Setter` this catches potential bugs in the library, while the property in `Settable` ensures that fields aren't listed out-of-order or duplicated.
+
+# Feedback and contributions
+
+I don't have a lot of experience using this library, particularly in the context of proofs. If you have feedback, run into issues, or need anything changed to make it useful for you, **please open an issue**. I'll almost certainly fix it for you, or at least merge a pull request with the change you want.
