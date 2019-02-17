@@ -1,5 +1,4 @@
-Require Import RecordSet.
-Import ApplicativeNotations.
+From RecordUpdate Require Import Lib.
 
 Record X := mkX { A: nat; B: nat; C: bool; }.
 
