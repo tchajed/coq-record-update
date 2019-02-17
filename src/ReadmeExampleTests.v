@@ -1,4 +1,4 @@
-From RecordUpdate Require Import Lib.
+From RecordUpdate Require Import RecordUpdate.
 
 Record X := mkX { A: nat; B: nat; C: bool; }.
 
