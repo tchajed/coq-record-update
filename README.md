@@ -5,13 +5,12 @@
 In a nutshell, this library automatically provides a generic way to update record fields. Here's a teaser example:
 
 ```coq
-Require Import RecordSet.
-Import ApplicativeNotations.
+From RecordUpdate Require Import RecordSet.
 
 Record X := mkX { A: nat; B: nat; C: bool; }.
 
 (* all you need to do is provide something like this, listing out the fields of your record: *)
-Instance etaX : Settable _ := mkSettable (constructor mkX <*> A <*> B <*> C)%set.
+Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
 (* and now you can update fields! *)
 Definition setAB a b x := set B b (set A a x).
