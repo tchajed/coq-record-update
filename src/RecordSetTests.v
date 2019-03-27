@@ -41,3 +41,20 @@ Module DependentExample.
   Import RecordSetNotations.
   Definition setB b x := x[B := b].
 End DependentExample.
+
+Module WellFormedExample.
+
+  Record X := mkX { A: nat;
+                    B: nat;
+                    C: unit }.
+
+  Instance etaX : Settable _ := settable! mkX <A; B; C>.
+
+  Definition setAB a b x := set A (fun _ => a) (set B (fun _ => b) x).
+
+  (* Resolving an instance for SetterWf proves some correctness properties of
+  the setter. You can also require constructing this instance by accessing the
+  setter through set_wf. *)
+  Instance set_A : SetterWf A := ltac:(apply _).
+  Definition setAB_wf a b x := set_wf A (fun _ => a) (set_wf B (fun _ => b) x).
+End WellFormedExample.

@@ -65,25 +65,35 @@ Local Ltac get_setter T proj :=
 (* Setter provides a way to change a field given by a projection function, along
 with correctness conditions that require the projected field and only the
 projected field is modified. *)
-Class Setter {R T} (proj: R -> T) :=
-  { set: (T -> T) -> R -> R;
-    set_get: forall v r, proj (set v r) = v (proj r);
-    set_eq: forall r, set (fun x => x) r = r; }.
-
+Class Setter {R T} (proj: R -> T) := set : (T -> T) -> R -> R.
 Arguments set {R T} proj {Setter}.
 
-Ltac SetInstance_t :=
+Class SetterWf {R T} (proj: R -> T) :=
+  { set_wf :> Setter proj;
+    set_get: forall v r, proj (set proj v r) = v (proj r);
+    set_eq: forall r, set proj (fun x => x) r = r; }.
+
+Arguments set_wf {R T} proj {SetterWf}.
+
+Local Ltac SetterInstance_t :=
   match goal with
-  | |- @Setter ?T _ ?A => unshelve eapply Build_Setter;
-                        [ get_setter T A |
-                          let r := fresh in
-                          intros ? r; destruct r |
-                          let r := fresh in
-                          intros r; destruct r ];
-                        intros; reflexivity
+  | |- @Setter ?T _ ?A => get_setter T A
   end.
 
-Hint Extern 1 (Setter _) => SetInstance_t : typeclass_instances.
+Local Ltac SetterWfInstance_t :=
+  match goal with
+  | |- @SetterWf ?T _ ?A =>
+    unshelve notypeclasses refine (Build_SetterWf _ _ _);
+    [ get_setter T A |
+      let r := fresh in
+      intros ? r; destruct r |
+      let r := fresh in
+      intros r; destruct r ];
+    intros; reflexivity
+  end.
+
+Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
+Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
 
 Module RecordSetNotations.
   Delimit Scope record_set with rs.
