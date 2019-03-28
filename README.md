@@ -17,7 +17,7 @@ Definition setAB a b x := set B b (set A a x).
 
 (* you can also use a notation for the same thing: *)
 Import RecordSetNotations.
-Definition setAB' a b x := x[A := a][B := b].
+Definition setAB' a b x := x <|A := a|> <|B := b|>.
 ```
 
 Coq has no record update syntax, nor does it create updaters for setting individual fields of a record. This small library automates creating such updaters.

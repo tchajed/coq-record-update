@@ -10,4 +10,4 @@ Definition setAB a b x := set B b (set A a x).
 
 (* you can also use a notation for the same thing: *)
 Import RecordSetNotations.
-Definition setAB' a b x := x[A := a][B := b].
+Definition setAB' a b x := x <|A := a|> <|B := b|>.

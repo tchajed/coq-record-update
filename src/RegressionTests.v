@@ -6,5 +6,5 @@ Module GH2.
   Instance etaX : Settable _ := settable! mkX <A>.
 
   (* name r should not prevent finding a Setter A instance *)
-  Definition setA (r : nat) x := x[A := 32].
+  Definition setA (r : nat) x := x <|A := 32|>.
 End GH2.
