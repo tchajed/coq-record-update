@@ -55,6 +55,24 @@ Module WellFormedExample.
   (* Resolving an instance for SetterWf proves some correctness properties of
   the setter. You can also require constructing this instance by accessing the
   setter through set_wf. *)
-  Instance set_A : SetterWf A := ltac:(apply _).
+  Instance set_A : SetterWf A.
+  Proof.
+    apply _.
+  Qed.
+
   Definition setAB_wf a b x := set_wf A (fun _ => a) (set_wf B (fun _ => b) x).
 End WellFormedExample.
+
+Module DependentWfExample.
+  Record X := mkX { T: Type;
+                    A: T;
+                    B: nat }.
+
+  Instance etaX : Settable X :=
+    settable! mkX <T; A; B>.
+
+  Instance set_A : SetterWf B.
+  Proof.
+    apply _.
+  Qed.
+End DependentWfExample.

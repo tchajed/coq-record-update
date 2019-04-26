@@ -71,7 +71,7 @@ Arguments set {R T} proj {Setter}.
 Class SetterWf {R T} (proj: R -> T) :=
   { set_wf :> Setter proj;
     set_get: forall v r, proj (set proj v r) = v (proj r);
-    set_eq: forall r, set proj (fun x => x) r = r; }.
+    set_eq: forall f r, f (proj r) = proj r -> set proj f r = r; }.
 
 Arguments set_wf {R T} proj {SetterWf}.
 
@@ -86,10 +86,10 @@ Local Ltac SetterWfInstance_t :=
     unshelve notypeclasses refine (Build_SetterWf _ _ _);
     [ get_setter T A |
       let r := fresh in
-      intros ? r; destruct r |
+      intros ? r; destruct r; reflexivity |
+      let f := fresh in
       let r := fresh in
-      intros r; destruct r ];
-    intros; reflexivity
+      intros f r; destruct r; cbv; congruence ]
   end.
 
 Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
