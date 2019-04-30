@@ -43,6 +43,10 @@ Notation "'settable!' mk < f1 ; .. ; fn >" :=
 (** [setter] creates a setter based on an eta-expanded record constructor and a
 particular field projection proj *)
 Local Ltac setter etaT proj :=
+  lazymatch etaT with
+  | context[proj] => idtac
+  | _ => fail 1 proj "is not a field"
+  end;
   let set :=
       (match eval pattern proj in etaT with
        | ?setter ?proj => constr:(fun f => setter (fun r => f (proj r)))
