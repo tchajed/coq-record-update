@@ -31,3 +31,15 @@ As a bonus, the `Setter F` typeclass includes some theorems showing the updater 
 # Feedback and contributions
 
 I don't have a lot of experience using this library, particularly in the context of proofs. If you have feedback, run into issues, or need anything changed to make it useful for you, **please open an issue**. I'll almost certainly fix it for you, or at least merge a pull request with the change you want.
+
+# Wait, what? How does that work?
+
+I'm glad you asked! There are three tricks here:
+
+1. First, we represent the fields of the record. (If you're familiar with Haskell, we use the Applicative for `type Reader r a = r -> a`. and write down `pure constructor <*> field1 <*> field2 <*> field3`.) The representation is actually just an identity function for the record, but it re-constructs the record from its fields. I think of this expression as the record's eta expansion (though it's a very particular eta expansion).
+2. The second trick is that we can take this identity function and make a small tweak to it to turn it into an updater for a single field: if we replace a field with `f: r -> t` in the eta expansion (where `r` is the record type and `t` is the field type), instead of putting the field back as-is, we can substitute any function of the whole record. The library doesn't expose this much flexibility, but it allows any function of the current field value, and as a special case supports setting the field to a constant.
+
+    To actually implement this substitution without doing it by hand, we use the `pattern` tactic. This is easiest to illustrate with an example: `pattern field2 in pure constructor <*> field1 <*> field2 <*> field3` evaluates to `(fun f => pure constructor <*> field1 <*> f <*> field3) field2`. The first function is exactly the updater we want! We can now extract it with a simple Ltac pattern match.
+3. The final piece of the puzzle is to get all of this Ltac to run. Here we (abuse) typeclasses, in two ways. You might notice that the `set` function in coq-record-update is just part of the class `Setter r field`. To resolve that class, we use a tactic rather than user-provided instances, and that tactic implements the `pattern` trick --- the tactic is easy to install because typeclass resolution is just an `auto`-like search using the `typeclass_instances` hint database, and we can sneak a `Hint Extern` into that database. That's the first typeclass trick. The second is used to look up the record eta expansion when resolving `Setter r field`. Here we have the user write a typeclass `Settable r` with the eta expansion and in Ltac we look up the eta expansion and then unfold it to look at the syntax, since the actual expression is relevant and not just its use as a function. In fact, you can implement `Settable` by providing the identity function and then setting won't work because the Ltac can't do anything with it.
+
+It's pretty cool what you can do with Coq typeclasses.
