@@ -8,6 +8,11 @@ Arguments Reader : clear implicits.
 (* pure/return *)
 Definition constructor {E T} (x:T) : Reader E (fun _ => T) := fun _ => x.
 
+(* Always unfold when applied with a "final" argument.
+Before this: Eval cbn in (constructor 5 0) gives 'constructor 5 0'
+After this: Eval cbn in (constructor 5 0) gives '5' *)
+Arguments constructor {_ _} _ _ /.
+
 (* Applicative's (<*>) (written as `ap`).
 
 This has an awkwardly long name since it's intended to be used infix with
