@@ -10,14 +10,14 @@ default: $(VFILES:.v=.vo)
 test: $(TEST_VFILES:.v=.vo) $(VFILES:.v=.vo)
 
 _CoqProject: libname $(wildcard vendor/*)
-	@echo "-R src $$(cat libname)" > $@
+	@echo "-Q src $$(cat libname)" > $@
 	@for libdir in $(wildcard vendor/*); do \
 	libname=$$(cat $$libdir/libname); \
 	if [ $$? -ne 0 ]; then \
 	  echo "Do you need to run git submodule --init --recursive?" 1>&2; \
 		exit 1; \
 	fi; \
-	echo "-R $$libdir/src $$(cat $$libdir/libname)" >> $@; \
+	echo "-Q $$libdir/src $$(cat $$libdir/libname)" >> $@; \
 	done
 	@echo "_CoqProject:"
 	@cat $@
