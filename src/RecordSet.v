@@ -107,7 +107,7 @@ Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
 Module RecordSetNotations.
   Delimit Scope record_set with rs.
   Open Scope rs.
-  Notation "x <| proj  :=  v |>" := (set proj (constructor v) x)
+  Notation "x <| proj  :=  v |>" := (set proj (fun _ => v) x)
                                     (at level 12, left associativity) : record_set.
   Notation "x <| proj  ::=  f |>" := (set proj f x)
                                      (at level 12, f at next level, left associativity) : record_set.
