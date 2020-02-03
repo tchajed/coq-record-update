@@ -18,6 +18,18 @@ Definition setAB a b x := set B b (set A a x).
 (* you can also use a notation for the same thing: *)
 Import RecordSetNotations.
 Definition setAB' a b x := x <|A := a|> <|B := b|>.
+
+(* the notation also allows you to update nested fields: *)
+Record C := mkC { n : nat }.
+Record B := mkB { c : C }.
+Record A := mkA { b : B }.
+
+Instance etaC : Settable _ := settable! mkC<n>.
+Instance etaB : Settable _ := settable! mkB<c>.
+Instance etaA : Settable _ := settable! mkA<b>.
+
+Definition setNested n' x := x <| b; c; n := n' |>.
+Definition incNested x := x <| b; c; n ::= S |>.
 ```
 
 Coq has no record update syntax, nor does it create updaters for setting individual fields of a record. This small library automates creating such updaters.
