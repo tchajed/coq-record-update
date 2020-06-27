@@ -35,8 +35,11 @@ Class Settable T := { mkT: Reader T (fun _ => T);
 Arguments mkT T mk : clear implicits, rename.
 
 Local Ltac solve_mkT_ok :=
-  match goal with
-  | |- forall x, _ = _ => solve [ destruct x; cbv; f_equal ]
+  lazymatch goal with
+  | [ |- forall x, _ = _ ] =>
+    first [ solve [ let x := fresh in
+                    intro x; destruct x; cbv; f_equal ]
+          | fail 1 "unable to prove mkT_ok" ]
   end.
 
 (** settable! creates an instance of Settable from a constructor and list of

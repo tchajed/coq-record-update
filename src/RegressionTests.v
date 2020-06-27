@@ -18,3 +18,8 @@ Module GH5.
   (* should not succeed, getA is not a projection *)
   Fail Definition setA (r: X) (a: nat) := set getA (fun _ => a) r.
 End GH5.
+
+Module GH10.
+  Record X := mkX { A: nat; B: nat; x: bool; }.
+  Instance etaX : Settable _ := settable! mkX <A; B; x>.
+End GH10.
