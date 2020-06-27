@@ -15,7 +15,8 @@ Arguments constructor {_ _} _ _ /.
 
 (* Applicative's (<*>) (written as `ap`).
 
-This has an awkwardly long name since it's intended to be used infix with
+This has an awkwardly long name since it's intended to be used through the
+settable! notation
  *)
 Definition applicative_ap {E}
            {A: E -> Type}
