@@ -1,1 +1,4 @@
 -Q src RecordUpdate
+-arg -w -arg -undeclared-scope
+src/RecordSet.v
+src/RecordUpdate.v
