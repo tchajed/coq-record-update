@@ -42,7 +42,18 @@ As a bonus, the `Setter F` typeclass includes some theorems showing the updater 
 
 # Feedback and contributions
 
-I don't have a lot of experience using this library, particularly in the context of proofs. If you have feedback, run into issues, or need anything changed to make it useful for you, **please open an issue**. I'll almost certainly fix it for you, or at least merge a pull request with the change you want.
+If you have feedback or need some improvement to make this library useful to you, **please open an issue**. I do actively maintain it, though that has only required the occasional bug fix for a while.
+
+# Building and installing
+
+To build and install:
+
+``` sh
+git clone https://github.com/tchajed/coq-record-update.git
+cd coq-record-update
+make   # or make -j <number-of-cores-on-your-machine>
+make install
+```
 
 # Wait, what? How does that work?
 
