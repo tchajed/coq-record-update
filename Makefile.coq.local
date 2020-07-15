@@ -1,0 +1,36 @@
+## this test configuration is copied ## from std++
+## (https://gitlab.mpi-sws.org/iris/stdpp)
+
+# Run tests interleaved with main build.  They have to be in the same target for this.
+real-all: $(if $(NO_TEST),,test)
+
+# the test suite
+TESTFILES=$(wildcard tests/*.v)
+
+test: $(TESTFILES:.v=.vo)
+.PHONY: test
+
+COQ_TEST=$(COQTOP) $(COQDEBUG) -batch -test-mode
+COQ_OLD=$(shell echo "$(COQ_VERSION)" | egrep "^8\.(7|8|9)\b" -q && echo 1)
+COQ_MINOR_VERSION=$(shell echo "$(COQ_VERSION)" | egrep '^[0-9]+\.[0-9]+\b' -o)
+
+tests/.coqdeps.d: $(TESTFILES)
+	$(SHOW)'COQDEP TESTFILES'
+	$(HIDE)$(COQDEP) -dyndep var $(COQMF_COQLIBS_NOML) $^ $(redir_if_ok)
+-include tests/.coqdeps.d
+
+$(TESTFILES:.v=.vo): %.vo: %.v $(if $(MAKE_REF),,%.ref)
+	$(HIDE)TEST="$$(basename -s .v $<)" && \
+	  if test -f "tests/$$TEST.$(COQ_MINOR_VERSION).ref"; then \
+	    REF="tests/$$TEST.$(COQ_MINOR_VERSION).ref"; \
+	  else \
+	    REF="tests/$$TEST.ref"; \
+	  fi && \
+	  echo "COQTEST$(if $(COQ_OLD), [no ref],$(if $(MAKE_REF), [make ref],)) $<$(if $(COQ_OLD),, (ref: $$REF))" && \
+	  TMPFILE="$$(mktemp)" && \
+	  $(TIMER) $(COQ_TEST) $(COQFLAGS) $(COQLIBS) -load-vernac-source $< > "$$TMPFILE" && \
+	  $(if $(COQ_OLD),true, \
+	    $(if $(MAKE_REF),mv "$$TMPFILE" "$$REF",diff -u "$$REF" "$$TMPFILE") \
+	  ) && \
+	  rm -f "$$TMPFILE" && \
+	  touch $@

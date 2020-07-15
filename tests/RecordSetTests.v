@@ -81,11 +81,11 @@ Module NestedExample.
   Record C := mkC { n : nat }.
   Record B := mkB { c : C }.
   Record A := mkA { b : B }.
-  
+
   Instance etaC : Settable _ := settable! mkC<n>.
   Instance etaB : Settable _ := settable! mkB<c>.
   Instance etaA : Settable _ := settable! mkA<b>.
-  
+
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
 End NestedExample.

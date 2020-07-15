@@ -3,5 +3,8 @@
 *.vok
 *.glob
 .*.aux
+# auto-generated
 .coqdeps.d
-_CoqProject
+.Makefile.coq.d
+Makefile.coq
+Makefile.coq.conf

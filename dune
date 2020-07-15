@@ -1,0 +1,4 @@
+(coq.theory
+ (name RecordUpdate)
+ (package coq-record-update)
+ (synopsis "Generic support for updating record fields"))

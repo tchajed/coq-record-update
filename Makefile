@@ -1,43 +1,45 @@
-SRC_DIRS := 'src' $(shell test -d 'vendor' && echo 'vendor')
-ALL_VFILES := $(shell find -L $(SRC_DIRS) -name "*.v")
-TEST_VFILES := $(shell find -L 'src' -name "*Tests.v")
-PROJ_VFILES := $(shell find -L 'src' -name "*.v")
-VFILES := $(filter-out $(TEST_VFILES),$(PROJ_VFILES))
+## this Makefile, as well as the test setup in Makefile.coq.local, is copied
+## from std++ (https://gitlab.mpi-sws.org/iris/stdpp)
 
-COQ_ARGS := -w +all -w -undeclared-scope,-auto-template
+# Forward most targets to Coq makefile (with some trick to make this phony)
+%: Makefile.coq phony
+	+@make -f Makefile.coq $@
 
-default: $(VFILES:.v=.vo)
-test: $(TEST_VFILES:.v=.vo) $(VFILES:.v=.vo)
+all: Makefile.coq
+	+@make -f Makefile.coq all
+.PHONY: all
 
-_CoqProject: libname $(wildcard vendor/*)
-	@echo "-Q src $$(cat libname)" > $@
-	@for libdir in $(wildcard vendor/*); do \
-	libname=$$(cat $$libdir/libname); \
-	if [ $$? -ne 0 ]; then \
-	  echo "Do you need to run git submodule --init --recursive?" 1>&2; \
-		exit 1; \
-	fi; \
-	echo "-Q $$libdir/src $$(cat $$libdir/libname)" >> $@; \
-	done
-	@echo "_CoqProject:"
-	@cat $@
+clean: Makefile.coq
+	+@make -f Makefile.coq clean
+	find theories tests exercises solutions \( -name "*.d" -o -name "*.vo" -o -name "*.vo[sk]" -o -name "*.aux" -o -name "*.cache" -o -name "*.glob" -o -name "*.vio" \) -print -delete || true
+	rm -f Makefile.coq .lia.cache
+.PHONY: clean
 
-.coqdeps.d: $(ALL_VFILES) _CoqProject
-	@echo "COQDEP $@"
-	@coqdep -f _CoqProject $(ALL_VFILES) > $@
+# Create Coq Makefile.
+Makefile.coq: _CoqProject Makefile
+	"$(COQBIN)coq_makefile" -f _CoqProject -o Makefile.coq
 
-ifneq ($(MAKECMDGOALS), clean)
--include .coqdeps.d
-endif
+# Install build-dependencies
+build-dep/opam: opam Makefile
+	@echo "# Creating build-dep package."
+	@mkdir -p build-dep
+	@sed <opam -E 's/^(build|install|remove):.*/\1: []/; s/^name: *"(.*)" */name: "\1-builddep"/' >build-dep/opam
+	@fgrep builddep build-dep/opam >/dev/null || (echo "sed failed to fix the package name" && exit 1) # sanity check
 
-%.vo: %.v _CoqProject
-	@echo "COQC $<"
-	@coqc $(COQ_ARGS) $(shell cat '_CoqProject') $< -o $@
+build-dep: build-dep/opam phony
+	@# We want opam to not just instal the build-deps now, but to also keep satisfying these
+	@# constraints.  Otherwise, `opam upgrade` may well update some packages to versions
+	@# that are incompatible with our build requirements.
+	@# To achieve this, we create a fake opam package that has our build-dependencies as
+	@# dependencies, but does not actually install anything itself.
+	@echo "# Installing build-dep package."
+	@opam install $(OPAMFLAGS) build-dep/
 
-clean:
-	@echo "CLEAN vo glob aux"
-	@rm -f $(ALL_VFILES:.v=.vo) $(ALL_VFILES:.v=.glob) .coqdeps.d _CoqProject
-	@find $(SRC_DIRS) -name ".*.aux" -exec rm {} \;
+# Some files that do *not* need to be forwarded to Makefile.coq
+Makefile: ;
+_CoqProject: ;
+opam: ;
 
-.PHONY: default test clean
-.DELETE_ON_ERROR:
+# Phony wildcard targets
+phony: ;
+.PHONY: phony

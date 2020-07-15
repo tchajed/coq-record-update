@@ -1,0 +1,8 @@
+The command has indeed failed with message:
+Unable to satisfy the following constraints:
+In environment:
+r : X
+a : nat
+
+?Setter : "Setter getA"
+
