@@ -1,0 +1,5 @@
+(coq.theory
+ (name RecordUpdate)
+ (package coq-record-update)
+ (synopsis "Generic support for updating record fields in Coq")
+ (flags -w -undeclared-scope))
