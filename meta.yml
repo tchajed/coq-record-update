@@ -1,13 +1,14 @@
 ---
 fullname: Record Update
-shortname: record-update
+shortname: coq-record-update
+opam_name: coq-record-update
 organization: tchajed
 community: false
 travis: true
 coqdoc: false
 
 synopsis: >-
-  Generic support for updating record fields
+  Generic support for updating record fields in Coq
 
 description: |-
   While Coq provides projections for each field of a record, it has no
@@ -30,7 +31,6 @@ opam-file-version: dev
 license:
   fullname: MIT License
   identifier: MIT
-  file: LICENSE
 
 supported_coq_versions:
   text: 8.8 or later
@@ -44,8 +44,6 @@ tested_coq_opam_versions:
 - version: '8.9'
 - version: '8.8'
 
-dependencies:
-- description: none
 namespace: RecordUpdate
 
 keywords:
