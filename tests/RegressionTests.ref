@@ -1,8 +1,8 @@
 The command has indeed failed with message:
-Unable to satisfy the following constraints:
-In environment:
-r : X
-a : nat
-
-?Setter : "Setter getA"
-
+The following term contains unresolved implicit arguments:
+  (fun (r : X) (a : nat) => r <| getA ::= (fun _ : nat => a) |>)
+More precisely: 
+- ?Setter: Cannot infer the implicit parameter Setter of set whose type is
+  "Setter getA" (no type class instance found) in environment:
+  r : X
+  a : nat
