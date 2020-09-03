@@ -68,14 +68,4 @@ jobs:
     - PACKAGE=coq-record-update.dev
     - NJOBS=2
     <<: *OPAM
-  - env:
-    - COQ_IMAGE=coqorg/coq:8.9
-    - PACKAGE=coq-record-update.dev
-    - NJOBS=2
-    <<: *OPAM
-  - env:
-    - COQ_IMAGE=coqorg/coq:8.8
-    - PACKAGE=coq-record-update.dev
-    - NJOBS=2
-    <<: *OPAM
 

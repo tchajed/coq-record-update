@@ -109,6 +109,7 @@ Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
 Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
 
 Module RecordSetNotations.
+  Declare Scope record_set.
   Delimit Scope record_set with rs.
   Open Scope rs.
   Notation "x <| proj  :=  v |>" := (set proj (fun _ => v) x)
