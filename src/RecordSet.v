@@ -1,44 +1,19 @@
 Set Implicit Arguments.
 
-(** Reader is the reader monad (or just the function monad). We only use
-Applicative here. *)
-Definition Reader E T := forall (e:E), T e.
-Arguments Reader : clear implicits.
-
-(* pure/return *)
-Definition constructor {E T} (x:T) : Reader E (fun _ => T) := fun _ => x.
-
-(* Always unfold when applied with a "final" argument.
-Before this: Eval cbn in (constructor 5 0) gives 'constructor 5 0'
-After this: Eval cbn in (constructor 5 0) gives '5' *)
-Arguments constructor {_ _} _ _ /.
-
-(* Applicative's (<*>) (written as `ap`).
-
-This has an awkwardly long name since it's intended to be used through the
-settable! notation
- *)
-Definition applicative_ap {E}
-           {A: E -> Type}
-           {B: forall (e:E), A e -> Type}
-           (f: Reader E (fun e => forall (a:A e), B e a)) :
-  forall (x: Reader E A), Reader E (fun e => B e (x e))  :=
-  fun x => fun e => f e (x e).
-
 (** Settable is a way of accessing a constructor for a record of type T. The
 syntactic form of this definition is important: it must be an eta-expanded
 version of T's constructor, written generically over the field accessors of T.
 The best way to do this for a record X := mkX { A; B; C} is
 [settable! mkX <A; B; C>]. *)
-Class Settable T := { mkT: Reader T (fun _ => T);
+Class Settable T := { mkT: T -> T;
                       mkT_ok: forall x, mkT x = x }.
 Arguments mkT T mk : clear implicits, rename.
 
 Local Ltac solve_mkT_ok :=
   lazymatch goal with
   | [ |- forall x, _ = _ ] =>
-    first [ solve [ let x := fresh in
-                    intro x; destruct x; cbv; f_equal ]
+    first [ solve [ let x := fresh "x" in
+                    intro x; destruct x; reflexivity ]
           | fail 1 "unable to prove mkT_ok" ]
   end.
 
@@ -46,7 +21,7 @@ Local Ltac solve_mkT_ok :=
 fields. *)
 Notation "'settable!' mk < f1 ; .. ; fn >" :=
   (Build_Settable
-     (applicative_ap .. (applicative_ap (constructor mk) f1) .. fn)
+     (fun x => .. (mk (f1 x)) .. (fn x))
      ltac:(solve_mkT_ok)) (at level 0, mk at level 10, f1, fn at level 9, only parsing).
 
 (** [setter] creates a setter based on an eta-expanded record constructor and a
@@ -58,9 +33,8 @@ Local Ltac setter etaT proj :=
   end;
   let set :=
       (match eval pattern proj in etaT with
-       | ?setter ?proj => constr:(fun f => setter (fun r => f (proj r)))
+       | ?setter _ => constr:(fun f => setter (fun r => f (proj r)))
        end) in
-  let set := (eval cbv [constructor applicative_ap] in set) in
   exact set.
 
 (* Combining the above, [getSetter'] looks up the eta-expanded version of T with
