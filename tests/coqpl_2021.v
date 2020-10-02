@@ -54,6 +54,10 @@ Record several_nats :=
 Definition add2 (x:several_nats) := nat1 x + nat2 x.
 Definition nat1_synonym x := nat1 x.
 
+(* fails with a typechecking error, because the constructed identity function
+doesn't typecheck (we could do better by using tactics-in-terms to fail with a
+custom error message) *)
+Fail Instance: Settable _ := settable! Build_several_nats <nat1; nat3>.
 (* fails because fields are out-of-order *)
 Fail Instance: Settable _ := settable! Build_several_nats <nat1; nat3; nat2>.
 (* one of these just isn't a field, so the result isn't an identity function *)

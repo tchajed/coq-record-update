@@ -23,6 +23,12 @@ More precisely:
 - ?Setter: Cannot infer the implicit parameter Setter of set whose type is
   "Setter get_A" (no type class instance found).
 The command has indeed failed with message:
+In environment
+x : several_nats
+The term "Build_several_nats (nat1 x) (nat3 x)" has type
+ "nat -> several_nats" while it is expected to have type 
+"several_nats".
+The command has indeed failed with message:
 Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
 The command has indeed failed with message:
 Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
