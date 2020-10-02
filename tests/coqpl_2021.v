@@ -40,3 +40,30 @@ Proof.
   | _ => fail 1 "did not simplify correctly"
   end.
 Qed.
+
+Fail Definition error_not_field := set plus.
+
+Definition get_A x := A x.
+(* the Ltac produces a better error message, but typeclass resolution swallows
+up the error *)
+Fail Definition error_not_proj := set get_A.
+
+Record several_nats :=
+  { nat1: nat; nat2: nat; nat3: nat; }.
+
+Definition add2 (x:several_nats) := nat1 x + nat2 x.
+Definition nat1_synonym x := nat1 x.
+
+(* fails because fields are out-of-order *)
+Fail Instance: Settable _ := settable! Build_several_nats <nat1; nat3; nat2>.
+(* one of these just isn't a field, so the result isn't an identity function *)
+Fail Instance: Settable _ := settable! Build_several_nats <add2; nat2; nat3>.
+(* this isn't intentionally supported, but now we can only set nat1 via its
+synonym (actually, the only thing special about nat1 vs nat1_synonym is that Coq
+auto-generated nat1) *)
+Instance: Settable _ := settable! Build_several_nats <nat1_synonym; nat2; nat3>.
+
+(* this no longer works because the Settable several_nats doesn't say anything
+about nat1 *)
+Fail Definition set_nat1 f (x: several_nats) := set nat1 f x.
+Definition set_nat1 f (x: several_nats) := set nat1_synonym f x.

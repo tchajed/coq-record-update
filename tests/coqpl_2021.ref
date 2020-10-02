@@ -10,3 +10,28 @@
   x : X
   ============================
   3 = 3
+The command has indeed failed with message:
+The following term contains unresolved implicit arguments:
+  (set Nat.add)
+More precisely: 
+- ?Setter: Cannot infer the implicit parameter Setter of set whose type is
+  "Setter Nat.add" (no type class instance found).
+The command has indeed failed with message:
+The following term contains unresolved implicit arguments:
+  (set get_A)
+More precisely: 
+- ?Setter: Cannot infer the implicit parameter Setter of set whose type is
+  "Setter get_A" (no type class instance found).
+The command has indeed failed with message:
+Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
+The command has indeed failed with message:
+Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
+The command has indeed failed with message:
+The following term contains unresolved implicit arguments:
+  (fun (f : nat -> nat) (x : several_nats) => x <| nat1 ::= f |>)
+More precisely: 
+- ?Setter: Cannot infer the implicit parameter Setter of set whose type is
+  "Setter nat1" (no type class instance found) in
+  environment:
+  f : nat -> nat
+  x : several_nats

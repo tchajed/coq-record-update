@@ -14,7 +14,7 @@ Local Ltac solve_mkT_ok :=
   | [ |- forall x, _ = _ ] =>
     first [ solve [ let x := fresh "x" in
                     intro x; destruct x; reflexivity ]
-          | fail 1 "unable to prove mkT_ok" ]
+          | fail 1 "incorrect settable! declaration (perhaps fields are out-of-order?)" ]
   end.
 
 (** settable! creates an instance of Settable from a constructor and list of
