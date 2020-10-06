@@ -1,8 +1,11 @@
 The command has indeed failed with message:
 The following term contains unresolved implicit arguments:
-  (fun (r : X) (a : nat) => r <| getA ::= (fun _ : nat => a) |>)
+  (fun (r : X) (a : nat) => r <| getA := a |>)
 More precisely: 
 - ?Setter: Cannot infer the implicit parameter Setter of set whose type is
   "Setter getA" (no type class instance found) in environment:
   r : X
   a : nat
+test = 
+fun (s : ThreadState) (newRegs : Registers) => s <| Regs := newRegs |>
+     : ThreadState -> Registers -> ThreadState

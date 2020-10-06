@@ -1,0 +1,13 @@
+setA = fun (x : X) (n : nat) => x <| B := n |>
+     : X -> nat -> X
+
+Arguments setA _ _%nat_scope
+updateA = 
+fun (x : X) (n : nat) => x <| B ::= Nat.add n |>
+     : X -> nat -> X
+
+Arguments updateA _ _%nat_scope
+setXB = fun n : Nested => n <| anX; B := 3 |>
+     : Nested -> Nested
+updateXB = fun n : Nested => n <| anX; B ::= S |>
+     : Nested -> Nested

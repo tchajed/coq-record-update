@@ -23,3 +23,20 @@ Module GH10.
   Record X := mkX { A: nat; B: nat; x: bool; }.
   Instance etaX : Settable _ := settable! mkX <A; B; x>.
 End GH10.
+
+Module GH13.
+  Axiom Registers: Type.
+  Axiom word: Type.
+
+  Record ThreadState := mkThreadState {
+                            Regs: Registers;
+                            Pc: word;
+                          }.
+
+  Instance ThreadStateSettable : Settable ThreadState := settable! mkThreadState <Regs; Pc>.
+
+  Definition test(s: ThreadState)(newRegs: Registers): ThreadState := s <| Regs := newRegs |>.
+
+  (* should be printed with set notation, not update notation *)
+  Print test.
+End GH13.
