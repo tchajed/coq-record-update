@@ -79,8 +79,8 @@ Local Ltac SetterWfInstance_t :=
       intros f r; destruct r; cbv; congruence ]
   end.
 
-Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
-Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
+Global Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
+Global Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
 
 Module RecordSetNotations.
   Declare Scope record_set.
