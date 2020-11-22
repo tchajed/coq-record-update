@@ -2,3 +2,4 @@
 -arg -w -arg +undeclared-scope
 src/RecordSet.v
 src/RecordUpdate.v
+src/Lens.v
