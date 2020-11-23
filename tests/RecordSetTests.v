@@ -89,3 +89,18 @@ Module NestedExample.
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
 End NestedExample.
+
+Module TypeParameterExample.
+  Record X T := mkX { a: nat; b: T; c: T * T; }.
+  Arguments a {T}.
+  Arguments b {T}.
+  Arguments c {T}.
+
+  Instance etaX T : Settable _ := settable! (@mkX T) <a;b;c>.
+
+  Import RecordSetNotations.
+  Definition set_a (x:X unit) := x <| a := 3 |>.
+  Definition set_b (x:X unit) := x <| b := tt |>.
+  Definition set_b' {T} (x:X T) (v:T) := x <| b := v |>.
+  Definition set_c {T} (x:X T) (v:T) := x <| c := (v,v) |>.
+End TypeParameterExample.
