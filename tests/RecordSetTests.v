@@ -104,3 +104,25 @@ Module TypeParameterExample.
   Definition set_b' {T} (x:X T) (v:T) := x <| b := v |>.
   Definition set_c {T} (x:X T) (v:T) := x <| c := (v,v) |>.
 End TypeParameterExample.
+
+Module TypeParameterLimitation.
+  Record X T := mkX { a: nat; b: T; }.
+  Arguments a {T}.
+  Arguments b {T}.
+
+  Instance etaX T : Settable _ := settable! (@mkX T) <a;b>.
+
+  Import RecordSetNotations.
+  Definition set_a (x:X unit) := x <| a := 3 |>.
+  Definition set_b {T} (x:X T) (v:T) := x <| b := v |>.
+
+  (* unsupported by RecordUpdate: the pattern trick could do this in principle,
+  but the type of [set] in the [Setter] typeclass is too restrictive to allow
+  the change in X's type.
+
+  We could give [Setter] a broader type (where the type of the record can
+  change), but then I'd worry about type inference being underconstrained in the
+  common case. *)
+  Definition strong_update_to_b {T1 T2} (x: X T1) (v: T2) : X T2 :=
+    mkX (a x) v.
+End TypeParameterLimitation.
