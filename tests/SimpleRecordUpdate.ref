@@ -1,0 +1,2 @@
+(fun x : X => {| A := A x; B := B x; C := C x |})
+(fun (f : nat -> nat) (x : X) => {| A := A x; B := f (B x); C := C x |})
