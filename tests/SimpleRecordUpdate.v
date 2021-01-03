@@ -93,7 +93,7 @@ Module demo3.
 (*|
 Let's see what the above tactics do before we tie everything together into a nice user interface.
 
-   Recall that we've already implemented `Settable X`, so `get_eta X` can look it up.
+Recall that we've already implemented `Settable X`, so `get_eta X` can look it up.
 |*)
 
   Goal True. (* .in .messages *)
@@ -103,6 +103,7 @@ Let's see what the above tactics do before we tie everything together into a nic
     let setter_B := make_setter eta B in
     idtac setter_B. (* .in .messages .unfold *)
   Abort.
+
 End demo3.
 
 (*|
@@ -135,7 +136,7 @@ Module demo4.
   Import demo1. (* .none *)
 
 (*|
-Before we had to write something out pretty carefully; now we can just write this for `X`'s eta expansion:
+Before we had to write out the expansion of X carefully; now we can just list out the constructor and fields:
 |*)
 
   Instance etaX : Settable _ := settable! mkX <A;B;C>.
