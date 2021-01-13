@@ -1,36 +1,48 @@
-## this test configuration is copied ## from std++
-## (https://gitlab.mpi-sws.org/iris/stdpp)
+## this test configuration is copied
+## from std++ (https://gitlab.mpi-sws.org/iris/stdpp)
+
+# use NO_TEST=1 to skip the tests
+NO_TEST:=
+
+# use MAKE_REF=1 to generate new reference files
+MAKE_REF:=
 
 # Run tests interleaved with main build.  They have to be in the same target for this.
 real-all: $(if $(NO_TEST),,test)
 
 # the test suite
-TESTFILES=$(wildcard tests/*.v)
+TESTFILES:=$(shell find tests -name "*.v")
+NORMALIZER:=test-normalizer.sed
 
 test: $(TESTFILES:.v=.vo)
 .PHONY: test
 
 COQ_TEST=$(COQTOP) $(COQDEBUG) -batch -test-mode
-COQ_OLD=$(shell echo "$(COQ_VERSION)" | egrep "^8\.(8|9|10|11|12)\b" -q && echo 1)
-COQ_MINOR_VERSION=$(shell echo "$(COQ_VERSION)" | egrep '^[0-9]+\.[0-9]+\b' -o)
+COQ_MINOR_VERSION:=$(shell echo "$(COQ_VERSION)" | egrep '^[0-9]+\.[0-9]+\b' -o)
 
 tests/.coqdeps.d: $(TESTFILES)
 	$(SHOW)'COQDEP TESTFILES'
 	$(HIDE)$(COQDEP) -dyndep var $(COQMF_COQLIBS_NOML) $^ $(redir_if_ok)
 -include tests/.coqdeps.d
 
-$(TESTFILES:.v=.vo): %.vo: %.v $(if $(MAKE_REF),,%.ref)
-	$(HIDE)TEST="$$(basename -s .v $<)" && \
-	  if test -f "tests/$$TEST.$(COQ_MINOR_VERSION).ref"; then \
-	    REF="tests/$$TEST.$(COQ_MINOR_VERSION).ref"; \
+# Main test script (comments out-of-line because macOS otherwise barfs?!?)
+# - Determine reference file (`REF`).
+# - Print user-visible status line.
+# - Dump Coq output into a temporary file.
+# - Run `sed -i` on that file in a way that works on macOS.
+# - Either compare the result with the reference file, or move it over the reference file.
+# - Cleanup, and mark as done for make.
+$(TESTFILES:.v=.vo): %.vo: %.v $(if $(MAKE_REF),,%.ref) $(NORMALIZER)
+	$(HIDE)if test -f $*".$(COQ_MINOR_VERSION).ref"; then \
+	    REF=$*".$(COQ_MINOR_VERSION).ref"; \
 	  else \
-	    REF="tests/$$TEST.ref"; \
+	    REF=$*".ref"; \
 	  fi && \
-	  echo "COQTEST$(if $(COQ_OLD), [no ref],$(if $(MAKE_REF), [make ref],)) $<$(if $(COQ_OLD),, (ref: $$REF))" && \
+	  echo "COQTEST$(if $(MAKE_REF), [make ref],) $< (ref: $$REF)" && \
 	  TMPFILE="$$(mktemp)" && \
 	  $(TIMER) $(COQ_TEST) $(COQFLAGS) $(COQLIBS) -load-vernac-source $< > "$$TMPFILE" && \
-	  $(if $(COQ_OLD),true, \
-	    $(if $(MAKE_REF),mv "$$TMPFILE" "$$REF",diff -u "$$REF" "$$TMPFILE") \
-	  ) && \
+	  sed -f $(NORMALIZER) "$$TMPFILE" > "$$TMPFILE".new && \
+	  mv "$$TMPFILE".new "$$TMPFILE" && \
+	  $(if $(MAKE_REF),mv "$$TMPFILE" "$$REF",diff -u "$$REF" "$$TMPFILE") && \
 	  rm -f "$$TMPFILE" && \
 	  touch $@
