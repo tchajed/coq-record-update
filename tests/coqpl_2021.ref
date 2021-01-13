@@ -1,11 +1,11 @@
-1 subgoal
+1 goal
   
   f : nat -> nat
   x : X
   ============================
   {| A := A x; B := f (B x); C := C x |} =
   {| A := A x; B := f (B x); C := C x |}
-1 subgoal
+1 goal
   
   x : X
   ============================
