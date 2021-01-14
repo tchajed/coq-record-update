@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: coq-community/docker-coq-action@v1
         with:
-          opam_file: 'coq-record-update-plugin.opam'
+          opam_file: 'coq-record-update.opam'
           custom_image: ${{ matrix.image }}
 
 # See also:
