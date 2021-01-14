@@ -18,7 +18,7 @@ test: $(TESTFILES:.v=.vo)
 .PHONY: test
 
 COQ_TEST=$(COQTOP) $(COQDEBUG) -batch -test-mode
-COQ_OLD=$(shell echo "$(COQ_VERSION)" | egrep "^8\.(8|9|10|11|12)\b" -q && echo 1)
+COQ_OLD=$(shell echo "$(COQ_VERSION)" | egrep "^8\.(8|9|10|11)\b" -q && echo 1)
 COQ_MINOR_VERSION:=$(shell echo "$(COQ_VERSION)" | egrep '^[0-9]+\.[0-9]+\b' -o)
 
 tests/.coqdeps.d: $(TESTFILES)
