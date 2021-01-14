@@ -44,6 +44,8 @@ $(TESTFILES:.v=.vo): %.vo: %.v $(if $(MAKE_REF),,%.ref) $(NORMALIZER)
 	  $(TIMER) $(COQ_TEST) $(COQFLAGS) $(COQLIBS) -load-vernac-source $< > "$$TMPFILE" && \
 	  sed -f $(NORMALIZER) "$$TMPFILE" > "$$TMPFILE".new && \
 	  mv "$$TMPFILE".new "$$TMPFILE" && \
-	  $(if $(MAKE_REF),mv "$$TMPFILE" "$$REF",diff -u "$$REF" "$$TMPFILE") && \
+	  $(if $(COQ_OLD),true, \
+	    $(if $(MAKE_REF),mv "$$TMPFILE" "$$REF",diff -u "$$REF" "$$TMPFILE") \
+	  ) && \
 	  rm -f "$$TMPFILE" && \
 	  touch $@
