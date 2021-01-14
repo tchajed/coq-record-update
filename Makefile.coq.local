@@ -18,6 +18,7 @@ test: $(TESTFILES:.v=.vo)
 .PHONY: test
 
 COQ_TEST=$(COQTOP) $(COQDEBUG) -batch -test-mode
+COQ_OLD=$(shell echo "$(COQ_VERSION)" | egrep "^8\.(8|9|10|11|12)\b" -q && echo 1)
 COQ_MINOR_VERSION:=$(shell echo "$(COQ_VERSION)" | egrep '^[0-9]+\.[0-9]+\b' -o)
 
 tests/.coqdeps.d: $(TESTFILES)
@@ -38,7 +39,7 @@ $(TESTFILES:.v=.vo): %.vo: %.v $(if $(MAKE_REF),,%.ref) $(NORMALIZER)
 	  else \
 	    REF=$*".ref"; \
 	  fi && \
-	  echo "COQTEST$(if $(MAKE_REF), [make ref],) $< (ref: $$REF)" && \
+	  echo "COQTEST$(if $(COQ_OLD), [no ref],$(if $(MAKE_REF), [make ref],)) $<$(if $(COQ_OLD),, (ref: $$REF))" && \
 	  TMPFILE="$$(mktemp)" && \
 	  $(TIMER) $(COQ_TEST) $(COQFLAGS) $(COQLIBS) -load-vernac-source $< > "$$TMPFILE" && \
 	  sed -f $(NORMALIZER) "$$TMPFILE" > "$$TMPFILE".new && \
