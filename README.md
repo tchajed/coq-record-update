@@ -1,6 +1,6 @@
 # Coq record update library
 
-[![Build Status](https://travis-ci.com/tchajed/coq-record-update.svg?branch=master)](https://travis-ci.com/tchajed/coq-record-update)
+![CI](https://github.com/tchajed/coq-record-update/workflows/CI/badge.svg)
 
 In a nutshell, this library automatically provides a generic way to update record fields. Here's a teaser example:
 
