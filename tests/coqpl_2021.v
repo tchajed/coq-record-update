@@ -4,22 +4,22 @@ Record X := mkX { A: nat; B: nat; C: bool }.
 (* you can omit the X; it's there to clarify the Settable class for the paper *)
 Instance: Settable X := settable! mkX <A; B; C>.
 
-Definition add3_to_B x := set B (plus 3) x.
-Definition setB_to_3 x := set B (fun _ => 3) x.
+Definition add3_to_B x := set B x (plus 3).
+Definition setB_to_3 x := set B x (fun _ => 3).
 Definition setB_to_3_notation x := x <|B:=3|>.
 
 Instance set_B : Setter B := _.
 
-Theorem set_B_convertible_to f x :
-  set_B f x =
+Theorem set_B_convertible_to x f :
+  set_B x f =
   let a := x.(A) in
   let b' := f x.(B) in
   let c := x.(C) in
   mkX a b' c.
 Proof. reflexivity. Qed.
 
-Theorem set_B_is f x :
-  set_B f x =
+Theorem set_B_is x f :
+  set_B x f =
   mkX x.(A) (f x.(B)) x.(C).
 Proof.
   unfold set_B.
@@ -31,7 +31,7 @@ Proof.
 Qed.
 
 Theorem simpl_behavior x :
-  (set A (fun _ => 2) (set B (fun _ => 3) x)).(B) = 3.
+  (set A (set B x (fun _ => 3)) (fun _ => 2)).(B) = 3.
 Proof.
   simpl.
   Show.
@@ -70,4 +70,4 @@ Instance: Settable _ := settable! Build_several_nats <nat1_synonym; nat2; nat3>.
 (* this no longer works because the Settable several_nats doesn't say anything
 about nat1 *)
 Fail Definition set_nat1 f (x: several_nats) := set nat1 f x.
-Definition set_nat1 f (x: several_nats) := set nat1_synonym f x.
+Definition set_nat1 (x: several_nats) f := set nat1_synonym x f.

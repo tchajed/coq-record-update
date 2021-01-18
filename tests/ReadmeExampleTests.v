@@ -6,7 +6,7 @@ Record X := mkX { A: nat; B: nat; C: bool; }.
 Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
 (* and now you can update fields! *)
-Definition setAB a b x := set B b (set A a x).
+Definition setAB x a b := set B (set A x a) b.
 
 (* you can also use a notation for the same thing: *)
 Import RecordSetNotations.

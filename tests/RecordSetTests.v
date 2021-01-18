@@ -40,6 +40,10 @@ Module DependentExample.
 
   Import RecordSetNotations.
   Definition setB b x := x <|B := b|>.
+
+  Definition setA_manually(x: X)(a: T x): X := @mkX (T x) a (B x).
+  Definition setA(x: X)(a: T x) := x <|A := a|>.
+
 End DependentExample.
 
 Module WellFormedExample.
@@ -50,7 +54,7 @@ Module WellFormedExample.
 
   Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
-  Definition setAB a b x := set A (fun _ => a) (set B (fun _ => b) x).
+  Definition setAB a b x := set A (set B x (fun _ => b)) (fun _ => a).
 
   (* Resolving an instance for SetterWf proves some correctness properties of
   the setter. You can also require constructing this instance by accessing the
@@ -60,7 +64,7 @@ Module WellFormedExample.
     apply _.
   Qed.
 
-  Definition setAB_wf a b x := set_wf A (fun _ => a) (set_wf B (fun _ => b) x).
+  Definition setAB_wf a b x := set_wf A (set_wf B x (fun _ => b)) (fun _ => a).
 End WellFormedExample.
 
 Module DependentWfExample.
@@ -77,6 +81,7 @@ Module DependentWfExample.
   Qed.
 End DependentWfExample.
 
+(* TODO
 Module NestedExample.
   Record C := mkC { n : nat }.
   Record B := mkB { c : C }.
@@ -89,6 +94,7 @@ Module NestedExample.
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
 End NestedExample.
+*)
 
 Module TypeParameterExample.
   Record X T := mkX { a: nat; b: T; c: T * T; }.
