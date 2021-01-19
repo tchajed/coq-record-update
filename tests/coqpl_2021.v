@@ -24,6 +24,7 @@ Theorem set_B_is f x :
 Proof.
   unfold set_B.
   Show.
+  cbv.
   match goal with
   | |- ?x = ?x => reflexivity
   | _ => fail 1 "not an exact match"
@@ -43,7 +44,7 @@ Qed.
 
 Fail Definition error_not_field := set plus.
 
-Definition get_A x := A x.
+Definition get_A (x : X) := 5.
 (* the Ltac produces a better error message, but typeclass resolution swallows
 up the error *)
 Fail Definition error_not_proj := set get_A.
@@ -69,5 +70,5 @@ Instance: Settable _ := settable! Build_several_nats <nat1_synonym; nat2; nat3>.
 
 (* this no longer works because the Settable several_nats doesn't say anything
 about nat1 *)
-Fail Definition set_nat1 f (x: several_nats) := set nat1 f x.
-Definition set_nat1 f (x: several_nats) := set nat1_synonym f x.
+Definition set_nat1 f (x: several_nats) := set nat1 f x.
+Definition set_nat1' f (x: several_nats) := set nat1_synonym f x.

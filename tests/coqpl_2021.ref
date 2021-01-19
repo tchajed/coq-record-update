@@ -3,8 +3,10 @@
   f : nat -> nat
   x : X
   ============================
-  {| A := A x; B := f (B x); C := C x |} =
-  {| A := A x; B := f (B x); C := C x |}
+  {|
+  A := let (A0, _, _) := x in A0;
+  B := f (B x);
+  C := let (_, _, C0) := x in C0 |} = {| A := A x; B := f (B x); C := C x |}
 1 goal
   
   x : X
@@ -32,12 +34,3 @@ The command has indeed failed with message:
 Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
 The command has indeed failed with message:
 Tactic failure: incorrect settable! declaration (perhaps fields are out-of-order?).
-The command has indeed failed with message:
-The following term contains unresolved implicit arguments:
-  (fun (f : nat -> nat) (x : several_nats) => x <| nat1 ::= f |>)
-More precisely: 
-- ?Setter: Cannot infer the implicit parameter Setter of set whose type is
-  "Setter nat1" (no type class instance found) in
-  environment:
-  f : nat -> nat
-  x : several_nats
