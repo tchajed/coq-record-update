@@ -12,10 +12,8 @@ Print updateA.
 Record Nested := mkNested { anX: X; aNat: nat; }.
 Instance etaNested : Settable _ := settable! mkNested <anX; aNat>.
 
-(* TODO not clear whether nested updates can still work?
 Definition setXB (n:Nested) := n <|anX; B:=3|>.
 Print setXB.
 
 Definition updateXB (n:Nested) := n <|anX; B::=S|>.
 Print updateXB.
-*)

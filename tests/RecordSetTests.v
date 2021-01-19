@@ -81,7 +81,6 @@ Module DependentWfExample.
   Qed.
 End DependentWfExample.
 
-(* TODO
 Module NestedExample.
   Record C := mkC { n : nat }.
   Record B := mkB { c : C }.
@@ -94,7 +93,6 @@ Module NestedExample.
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
 End NestedExample.
-*)
 
 Module TypeParameterExample.
   Record X T := mkX { a: nat; b: T; c: T * T; }.

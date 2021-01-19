@@ -89,10 +89,11 @@ Module RecordSetNotations.
                                      (at level 12, f at next level, left associativity) : record_set.
   Notation "x <| proj  :=  v |>" := (set proj x (fun _ => v))
                                     (at level 12, left associativity) : record_set.
+  Local Notation set_flip proj f := (fun x => set proj x f) (only parsing).
   Notation "x <| proj1 ; proj2 ; .. ; projn ::= f |>" :=
-    (set proj1 (set proj2 .. (set projn f) ..) x)
+    (set_flip proj1 (set_flip proj2 .. (set_flip projn f) ..) x)
     (at level 12, f at next level, left associativity) : record_set.
   Notation "x <| proj1 ; proj2 ; .. ; projn := v |>" :=
-    (set proj1 (set proj2 .. (set projn (fun _ => v)) ..) x)
+    (set_flip proj1 (set_flip proj2 .. (set_flip projn (fun _ => v)) ..) x)
     (at level 12, left associativity) : record_set.
 End RecordSetNotations.
