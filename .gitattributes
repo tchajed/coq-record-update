@@ -1,3 +1,5 @@
+# copied from fiat-crypto's .gitattributes for Windows compatibility
+
 * text=auto
 
 *.sh   text eol=lf
