@@ -16,7 +16,7 @@ Arguments over {_ _ _ _} _ _ _ : assert.
 
 Definition field_lens {A T} (proj: A -> T) `{!Setter proj} : Lens A A T T :=
   {| view := proj;
-     over := set proj; |}.
+     over f a := set proj a f; |}.
 
 Definition lens_compose {A1 A2 T1 T2 C1 C2}
            (l1 : Lens A1 A2 T1 T2)

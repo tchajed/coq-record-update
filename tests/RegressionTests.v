@@ -16,7 +16,7 @@ Module GH5.
   Definition getA (x:X) := let 'mkX a := x in a.
 
   (* should not succeed, getA is not a projection *)
-  Fail Definition setA (r: X) (a: nat) := set getA (fun _ => a) r.
+  Fail Definition setA (r: X) (a: nat) := set getA r (fun _ => a).
 End GH5.
 
 Module GH10.
