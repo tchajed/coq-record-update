@@ -24,18 +24,37 @@ Notation "'settable!' mk < f1 ; .. ; fn >" :=
      (fun x => .. (mk (f1 x)) .. (fn x))
      ltac:(solve_mkT_ok)) (at level 0, mk at level 10, f1, fn at level 9, only parsing).
 
+(** settable creates an instance of Settable *)
+Local Ltac settable :=
+  lazymatch goal with
+  | [ |- Settable _ ] => idtac
+  | [ |- ?G ] => fail 1 G "is not a Settable goal"
+  end;
+  unshelve econstructor;
+  [ let x := fresh in intro x; unshelve econstructor; destruct x
+  | let x := fresh in intro x; destruct x; reflexivity ].
+
+Local Ltac check_find_proj etaT_r proj_r proj :=
+  lazymatch etaT_r with
+  | _ proj_r => idtac
+  | ?f _ => check_find_proj f proj_r proj
+  | _ => fail 1 proj "is not a field"
+  end.
+
 (** [setter] creates a setter based on an eta-expanded record constructor and a
 particular field projection proj *)
 Local Ltac setter etaT proj :=
-  lazymatch etaT with
-  | context[proj] => idtac
-  | _ => fail 1 proj "is not a field"
-  end;
-  let set :=
-      (match eval pattern proj in etaT with
-       | ?setter _ => constr:(fun f => setter (fun r => f (proj r)))
-       end) in
-  exact set.
+  let r := fresh "r" in
+  let setter :=
+      constr:(
+        fun r
+        => ltac:(let etaT' := (eval cbv in (etaT r)) in
+                 let proj' := (eval cbv in (proj r)) in
+                 check_find_proj etaT' proj' proj;
+                 lazymatch eval pattern proj' in etaT' with
+                 | ?setter _ => exact setter
+                 end)) in
+  exact (fun f r => setter r (f (proj r))).
 
 (* Combining the above, [getSetter'] looks up the eta-expanded version of T with
 the Settable typeclass, and calls [setter] to create a setter. *)
@@ -81,6 +100,7 @@ Local Ltac SetterWfInstance_t :=
 
 Global Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
 Global Hint Extern 1 (SetterWf _) => SetterWfInstance_t : typeclass_instances.
+Global Hint Extern 1 (Settable _) => settable : typeclass_instances.
 
 Module RecordSetNotations.
   Declare Scope record_set.

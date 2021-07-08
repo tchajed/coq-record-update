@@ -8,9 +8,10 @@ Module SimpleExample.
                     B: nat;
                     C: unit }.
 
-  Instance etaX : Settable _ := settable! mkX <A; B; C>.
+  (*Instance etaX : Settable X := _. (*settable! mkX <A; B; C>.*)*)
 
   Import RecordSetNotations.
+
   Definition setAB a b x := x <|A := a|> <|B := b|>.
   Definition updateAB a b x := x <|A ::= plus a|> <|B ::= minus b|>.
 
@@ -22,8 +23,8 @@ Module IndexedType.
                         C: unit }.
   Arguments X T : clear implicits.
 
-  Instance etaX T: Settable (X T) :=
-    settable! (mkX (T:=T)) < A; B; C>.
+  (*Instance etaX T: Settable (X T) :=
+    settable! (mkX (T:=T)) < A; B; C>.*)
 
   Import RecordSetNotations.
   Definition setAB T a b (x: X T) := x <|A := a|> <|B := b|>.
@@ -35,8 +36,8 @@ Module DependentExample.
                     A: T;
                     B: nat }.
 
-  Instance etaX : Settable X :=
-    settable! mkX <T; A; B>.
+  (*Instance etaX : Settable X :=
+    settable! mkX <T; A; B>.*)
 
   Import RecordSetNotations.
   Definition setB b x := x <|B := b|>.
@@ -48,7 +49,7 @@ Module WellFormedExample.
                     B: nat;
                     C: unit }.
 
-  Instance etaX : Settable _ := settable! mkX <A; B; C>.
+  (*Instance etaX : Settable _ := settable! mkX <A; B; C>.*)
 
   Definition setAB a b x := set A (fun _ => a) (set B (fun _ => b) x).
 
@@ -68,8 +69,8 @@ Module DependentWfExample.
                     A: T;
                     B: nat }.
 
-  Instance etaX : Settable X :=
-    settable! mkX <T; A; B>.
+  (*Instance etaX : Settable X :=
+    settable! mkX <T; A; B>.*)
 
   Instance set_A : SetterWf B.
   Proof.
@@ -110,7 +111,7 @@ Module TypeParameterLimitation.
   Arguments a {T}.
   Arguments b {T}.
 
-  Instance etaX T : Settable _ := settable! (@mkX T) <a;b>.
+  (*Instance etaX T : Settable _ := settable! (@mkX T) <a;b>.*)
 
   Import RecordSetNotations.
   Definition set_a (x:X unit) := x <| a := 3 |>.
