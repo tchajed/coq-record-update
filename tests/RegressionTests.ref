@@ -9,5 +9,3 @@ More precisely:
 test = 
 fun (s : ThreadState) (newRegs : Registers) => s <| Regs := newRegs |>
      : ThreadState -> Registers -> ThreadState
-
-Arguments test ...
