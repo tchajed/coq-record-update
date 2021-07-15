@@ -1,17 +1,17 @@
 setA = fun (x : X) (n : nat) => x <| B := n |>
      : X -> nat -> X
 
-Arguments setA x n%nat_scope
+Arguments setA ...
 updateA = 
 fun (x : X) (n : nat) => x <| B ::= Nat.add n |>
      : X -> nat -> X
 
-Arguments updateA _ _%nat_scope
+Arguments updateA ...
 setXB = fun n : Nested => n <| anX; B := 3 |>
      : Nested -> Nested
 
-Arguments setXB n
+Arguments setXB ...
 updateXB = fun n : Nested => n <| anX; B ::= S |>
      : Nested -> Nested
 
-Arguments updateXB n
+Arguments updateXB ...
