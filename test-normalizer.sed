@@ -5,3 +5,5 @@ s/subgoal/goal/g
 /^Arguments/d
 # same PR adds additional blank lines
 /^$/d
+# locations in Fail added in https://github.com/coq/coq/pull/15174
+/^File/d
