@@ -8,4 +8,4 @@
 .Makefile.coq.d
 Makefile.coq
 Makefile.coq.conf
-.coq-native
+.coq-native/
