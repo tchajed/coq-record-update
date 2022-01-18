@@ -1,6 +1,6 @@
 # Coq record update library
 
-![CI](https://github.com/tchajed/coq-record-update/workflows/CI/badge.svg)
+[![CI](https://github.com/tchajed/coq-record-update/actions/workflows/coq-action.yml/badge.svg)](https://github.com/tchajed/coq-record-update/actions/workflows/coq-action.yml)
 
 In a nutshell, this library automatically provides a generic way to update record fields. Here's a teaser example:
 
