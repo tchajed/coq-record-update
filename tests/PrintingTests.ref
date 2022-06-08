@@ -1,6 +1,6 @@
 setA = fun (x : X) (n : nat) => x <| B := n |>
      : X -> nat -> X
-updateA = 
+updateA =
 fun (x : X) (n : nat) => x <| B ::= Nat.add n |>
      : X -> nat -> X
 setXB = fun n : Nested => n <| anX; B := 3 |>

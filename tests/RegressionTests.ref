@@ -6,6 +6,6 @@ More precisely:
   "Setter getA" (no type class instance found) in environment:
   r : X
   a : nat
-test = 
+test =
 fun (s : ThreadState) (newRegs : Registers) => s <| Regs := newRegs |>
      : ThreadState -> Registers -> ThreadState

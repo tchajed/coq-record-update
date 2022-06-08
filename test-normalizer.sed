@@ -7,3 +7,5 @@ s/subgoal/goal/g
 /^$/d
 # locations in Fail added in https://github.com/coq/coq/pull/15174
 /^File/d
+# extra space removed in https://github.com/coq/coq/pull/16130
+s/= $/=/
