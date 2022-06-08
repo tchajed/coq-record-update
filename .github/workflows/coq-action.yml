@@ -17,21 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image:
-          - 'coqorg/coq:dev'
-          - 'coqorg/coq:8.15'
-          - 'coqorg/coq:8.14'
-          - 'coqorg/coq:8.13'
-          - 'coqorg/coq:8.12'
-          - 'coqorg/coq:8.11'
-          - 'coqorg/coq:8.10'
+        coq_version:
+          - 'dev'
+          - '8.15'
+          - '8.14'
+          - '8.13'
+          - '8.12'
+          - '8.11'
+          - '8.10'
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - uses: coq-community/docker-coq-action@v1
         with:
           opam_file: 'coq-record-update.opam'
-          custom_image: ${{ matrix.image }}
+          coq_version: ${{ matrix.coq_version }}
+          ocaml_version: '4.13-flambda'
 
 # See also:
 # https://github.com/coq-community/docker-coq-action#readme
