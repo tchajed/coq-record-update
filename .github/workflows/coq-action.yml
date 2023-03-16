@@ -18,6 +18,7 @@ jobs:
       matrix:
         coq_image:
           - 'dev-ocaml-4.12-flambda'
+          - '8.16'
           - '8.15'
           - '8.14'
           - '8.13'
