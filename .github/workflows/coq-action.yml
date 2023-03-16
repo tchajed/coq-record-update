@@ -21,10 +21,6 @@ jobs:
           - '8.16'
           - '8.15'
           - '8.14'
-          - '8.13'
-          - '8.12'
-          - '8.11'
-          - '8.10'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
