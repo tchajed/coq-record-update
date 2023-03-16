@@ -1,7 +1,7 @@
 From RecordUpdate Require Import RecordUpdate Lens.
 
 Record X := mkX { A: nat; B: nat; C: bool; }.
-Instance etaX : Settable _ := settable! mkX <A; B; C>.
+#[export] Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
 (* lenses require much more boilerplate than setters (if you want them to look
 like Haskell lenses) *)
