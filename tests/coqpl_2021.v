@@ -2,13 +2,13 @@ From RecordUpdate Require Import RecordUpdate.
 
 Record X := mkX { A: nat; B: nat; C: bool }.
 (* you can omit the X; it's there to clarify the Settable class for the paper *)
-Instance: Settable X := settable! mkX <A; B; C>.
+#[export] Instance: Settable X := settable! mkX <A; B; C>.
 
 Definition add3_to_B x := set B (plus 3) x.
 Definition setB_to_3 x := set B (fun _ => 3) x.
 Definition setB_to_3_notation x := x <|B:=3|>.
 
-Instance set_B : Setter B := _.
+#[export] Instance set_B : Setter B := _.
 
 Theorem set_B_convertible_to f x :
   set_B f x =
@@ -57,15 +57,15 @@ Definition nat1_synonym x := nat1 x.
 (* fails with a typechecking error, because the constructed identity function
 doesn't typecheck (we could do better by using tactics-in-terms to fail with a
 custom error message) *)
-Fail Instance: Settable _ := settable! Build_several_nats <nat1; nat3>.
+Fail #[export] Instance: Settable _ := settable! Build_several_nats <nat1; nat3>.
 (* fails because fields are out-of-order *)
-Fail Instance: Settable _ := settable! Build_several_nats <nat1; nat3; nat2>.
+Fail #[export] Instance: Settable _ := settable! Build_several_nats <nat1; nat3; nat2>.
 (* one of these just isn't a field, so the result isn't an identity function *)
-Fail Instance: Settable _ := settable! Build_several_nats <add2; nat2; nat3>.
+Fail #[export] Instance: Settable _ := settable! Build_several_nats <add2; nat2; nat3>.
 (* this isn't intentionally supported, but now we can only set nat1 via its
 synonym (actually, the only thing special about nat1 vs nat1_synonym is that Coq
 auto-generated nat1) *)
-Instance: Settable _ := settable! Build_several_nats <nat1_synonym; nat2; nat3>.
+#[export] Instance: Settable _ := settable! Build_several_nats <nat1_synonym; nat2; nat3>.
 
 (* this no longer works because the Settable several_nats doesn't say anything
 about nat1 *)

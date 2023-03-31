@@ -8,7 +8,7 @@ Module SimpleExample.
                     B: nat;
                     C: unit }.
 
-  Instance etaX : Settable _ := settable! mkX <A; B; C>.
+  #[export] Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
   Import RecordSetNotations.
   Definition setAB a b x := x <|A := a|> <|B := b|>.
@@ -22,7 +22,7 @@ Module IndexedType.
                         C: unit }.
   Arguments X T : clear implicits.
 
-  Instance etaX T: Settable (X T) :=
+  #[export] Instance etaX T: Settable (X T) :=
     settable! (mkX (T:=T)) < A; B; C>.
 
   Import RecordSetNotations.
@@ -35,7 +35,7 @@ Module DependentExample.
                     A: T;
                     B: nat }.
 
-  Instance etaX : Settable X :=
+  #[export] Instance etaX : Settable X :=
     settable! mkX <T; A; B>.
 
   Import RecordSetNotations.
@@ -48,14 +48,14 @@ Module WellFormedExample.
                     B: nat;
                     C: unit }.
 
-  Instance etaX : Settable _ := settable! mkX <A; B; C>.
+  #[export] Instance etaX : Settable _ := settable! mkX <A; B; C>.
 
   Definition setAB a b x := set A (fun _ => a) (set B (fun _ => b) x).
 
   (* Resolving an instance for SetterWf proves some correctness properties of
   the setter. You can also require constructing this instance by accessing the
   setter through set_wf. *)
-  Instance set_A : SetterWf A.
+  #[export] Instance set_A : SetterWf A.
   Proof.
     apply _.
   Qed.
@@ -68,10 +68,10 @@ Module DependentWfExample.
                     A: T;
                     B: nat }.
 
-  Instance etaX : Settable X :=
+  #[export] Instance etaX : Settable X :=
     settable! mkX <T; A; B>.
 
-  Instance set_A : SetterWf B.
+  #[export] Instance set_A : SetterWf B.
   Proof.
     apply _.
   Qed.
@@ -82,9 +82,9 @@ Module NestedExample.
   Record B := mkB { c : C }.
   Record A := mkA { b : B }.
 
-  Instance etaC : Settable _ := settable! mkC<n>.
-  Instance etaB : Settable _ := settable! mkB<c>.
-  Instance etaA : Settable _ := settable! mkA<b>.
+  #[export] Instance etaC : Settable _ := settable! mkC<n>.
+  #[export] Instance etaB : Settable _ := settable! mkB<c>.
+  #[export] Instance etaA : Settable _ := settable! mkA<b>.
 
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
@@ -96,7 +96,7 @@ Module TypeParameterExample.
   Arguments b {T}.
   Arguments c {T}.
 
-  Instance etaX T : Settable _ := settable! (@mkX T) <a;b;c>.
+  #[export] Instance etaX T : Settable _ := settable! (@mkX T) <a;b;c>.
 
   Import RecordSetNotations.
   Definition set_a (x:X unit) := x <| a := 3 |>.
@@ -110,7 +110,7 @@ Module TypeParameterLimitation.
   Arguments a {T}.
   Arguments b {T}.
 
-  Instance etaX T : Settable _ := settable! (@mkX T) <a;b>.
+  #[export] Instance etaX T : Settable _ := settable! (@mkX T) <a;b>.
 
   Import RecordSetNotations.
   Definition set_a (x:X unit) := x <| a := 3 |>.

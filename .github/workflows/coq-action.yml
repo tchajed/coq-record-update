@@ -6,8 +6,6 @@ on:
       - master
     tags: '*'
   pull_request:
-    branches:
-      - '**'
   schedule:
     # Tuesday 8am UTC (3am EST)
     - cron: '0 8 * * TUE'
@@ -20,15 +18,12 @@ jobs:
       matrix:
         coq_image:
           - 'dev-ocaml-4.12-flambda'
+          - '8.16'
           - '8.15'
           - '8.14'
-          - '8.13'
-          - '8.12'
-          - '8.11'
-          - '8.10'
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: coq-community/docker-coq-action@v1
         with:
           opam_file: 'coq-record-update.opam'

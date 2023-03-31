@@ -23,5 +23,5 @@ Definition l := [1; 2; 3].
 Record foo := { a : list nat;
                 b : list bool; }.
 
-Instance eta_foo : Settable _ := settable! Build_foo <a; b>.
+#[export] Instance eta_foo : Settable _ := settable! Build_foo <a; b>.
 Definition m_foo (x:foo) := x <| a := [1;2;3] |> <| b := [] |>.

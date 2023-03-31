@@ -28,11 +28,11 @@ My favorite running example, a simple record with three fields.
 With just the above definition, we would still need to implement the typeclass for every field of every record. Here's the particular form of implementation that we'll automate with this library.
 |*)
 
-  Instance setA : Setter A :=
+  #[export] Instance setA : Setter A :=
     fun (f:nat -> nat) (x:X) => mkX (f (A x)) (B x) (C x).
-  Instance setB : Setter B :=
+  #[export] Instance setB : Setter B :=
     fun (f:nat -> nat) (x:X) => mkX (A x) (f (B x)) (C x).
-  Instance setC : Setter C :=
+  #[export] Instance setC : Setter C :=
     fun (f:bool -> bool) (x:X) => mkX (A x) (B x) (f (C x)).
 End demo1.
 
@@ -53,7 +53,7 @@ Module demo2.
 Here's how we intend to implement `Settable`. This is equal to `fun x => x`, but we won't actually call `mkRecord`, instead we'll look up the implementation of `Settable` and actually look at the definition (rather than using the instances opaquely).
 |*)
 
-  Instance etaX : Settable X :=
+  #[export] Instance etaX : Settable X :=
     fun x => mkX (A x) (B x) (C x).
 End demo2.
 
@@ -139,7 +139,7 @@ Module demo4.
 Before we had to write out the expansion of X carefully; now we can just list out the constructor and fields:
 |*)
 
-  Instance etaX : Settable _ := settable! mkX <A;B;C>.
+  #[export] Instance etaX : Settable _ := settable! mkX <A;B;C>.
 End demo4.
 
 (*|
@@ -160,7 +160,7 @@ Module test.
                     B: nat;
                     C: unit }.
 
-  Instance eta : Settable X := settable! mkX <A;B;C>.
+  #[export] Instance eta : Settable X := settable! mkX <A;B;C>.
 
   Definition setAB a b x := x <|A := a|> <|B := b|>.
   Definition updateAB a b x := x <|A ::= plus a|> <|B ::= minus b|>.
