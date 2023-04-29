@@ -31,11 +31,11 @@ Local Ltac setter etaT proj :=
   | context[proj] => idtac
   | _ => fail 1 proj "is not a field"
   end;
-  let set :=
-      (match eval pattern proj in etaT with
-       | ?setter _ => constr:(fun f => setter (fun r => f (proj r)))
-       end) in
-  exact set.
+  let y := fresh "y" in intro y;
+  let etaTy := eval cbv beta in (etaT y) in
+  match eval pattern (proj y) in etaTy with
+  | ?setter _ => exact (fun fieldUpdater => setter (fieldUpdater (proj y)))
+  end.
 
 (* Combining the above, [getSetter'] looks up the eta-expanded version of T with
 the Settable typeclass, and calls [setter] to create a setter. *)
@@ -52,13 +52,13 @@ Local Ltac get_setter T proj :=
 (* Setter provides a way to change a field given by a projection function, along
 with correctness conditions that require the projected field and only the
 projected field is modified. *)
-Class Setter {R T} (proj: R -> T) := set : (T -> T) -> R -> R.
+Class Setter {R: Type} {T: R -> Type} (proj: forall r, T r) := set : forall r: R, (T r -> T r) -> R.
 Arguments set {R T} proj {Setter}.
 
 Class SetterWf {R T} (proj: R -> T) :=
   { set_wf :> Setter proj;
-    set_get: forall v r, proj (set proj v r) = v (proj r);
-    set_eq: forall f r, f (proj r) = proj r -> set proj f r = r; }.
+    set_get: forall r v, proj (set proj r v) = v (proj r);
+    set_eq: forall f r, f (proj r) = proj r -> set proj r f = r; }.
 
 Arguments set_wf {R T} proj {SetterWf}.
 
@@ -73,10 +73,9 @@ Local Ltac SetterWfInstance_t :=
     unshelve notypeclasses refine (Build_SetterWf _ _ _);
     [ get_setter T A |
       let r := fresh in
-      intros ? r; destruct r; reflexivity |
-      let f := fresh in
+      intros r ?; destruct r; reflexivity |
       let r := fresh in
-      intros f r; destruct r; cbv; congruence ]
+      intros ? r; destruct r; cbv; congruence ]
   end.
 
 Global Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.
@@ -86,14 +85,15 @@ Module RecordSetNotations.
   Declare Scope record_set.
   Delimit Scope record_set with rs.
   Open Scope rs.
-  Notation "x <| proj  ::=  f |>" := (set proj f x)
+  Notation "x <| proj  ::=  f |>" := (set proj x f)
                                      (at level 12, f at next level, left associativity) : record_set.
-  Notation "x <| proj  :=  v |>" := (set proj (fun _ => v) x)
+  Notation "x <| proj  :=  v |>" := (set proj x (fun _ => v))
                                     (at level 12, left associativity) : record_set.
+  Local Notation set_flip proj f := (fun x => set proj x f) (only parsing).
   Notation "x <| proj1 ; proj2 ; .. ; projn ::= f |>" :=
-    (set proj1 (set proj2 .. (set projn f) ..) x)
+    (set_flip proj1 (set_flip proj2 .. (set_flip projn f) ..) x)
     (at level 12, f at next level, left associativity) : record_set.
   Notation "x <| proj1 ; proj2 ; .. ; projn := v |>" :=
-    (set proj1 (set proj2 .. (set projn (fun _ => v)) ..) x)
+    (set_flip proj1 (set_flip proj2 .. (set_flip projn (fun _ => v)) ..) x)
     (at level 12, left associativity) : record_set.
 End RecordSetNotations.
