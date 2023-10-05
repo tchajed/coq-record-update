@@ -56,9 +56,10 @@ Class Setter {R T} (proj: R -> T) := set : (T -> T) -> R -> R.
 Arguments set {R T} proj {Setter}.
 
 Class SetterWf {R T} (proj: R -> T) :=
-  { set_wf :> Setter proj;
+  { set_wf : Setter proj;
     set_get: forall v r, proj (set proj v r) = v (proj r);
     set_eq: forall f r, f (proj r) = proj r -> set proj f r = r; }.
+#[global] Existing Instance set_wf.
 
 Arguments set_wf {R T} proj {SetterWf}.
 
