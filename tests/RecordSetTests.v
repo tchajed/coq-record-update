@@ -13,6 +13,7 @@ Module SimpleExample.
   Import RecordSetNotations.
   Definition setAB a b x := x <|A := a|> <|B := b|>.
   Definition updateAB a b x := x <|A ::= plus a|> <|B ::= minus b|>.
+  Definition updateAB' a b x := x <|A x := plus a x|> <|B y := minus b y|>.
 
 End SimpleExample.
 
@@ -88,6 +89,8 @@ Module NestedExample.
 
   Import RecordSetNotations.
   Definition setNested n' x := x <| b; c; n := n' |>.
+  Definition updateNested n' x := x <| b; c; n ::= plus n' |>.
+  Definition updateNested' n' x := x <| b; c; n m := plus n' m |>.
 End NestedExample.
 
 Module TypeParameterExample.
