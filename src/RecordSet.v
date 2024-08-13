@@ -94,6 +94,9 @@ Module RecordSetNotations.
   Notation "x <| proj1 ; proj2 ; .. ; projn ::= f |>" :=
     (set proj1 (set proj2 .. (set projn f) ..) x)
     (at level 12, f at next level, left associativity) : record_set.
+  (* TODO: this notation and the one above have a common prefix. They do still
+  have an effect, do disable the warning for now. *)
+  #[warning="-notation-incompatible-prefix"]
   Notation "x <| proj1 ; proj2 ; .. ; projn := v |>" :=
     (set proj1 (set proj2 .. (set projn (fun _ => v)) ..) x)
     (at level 12, left associativity) : record_set.
