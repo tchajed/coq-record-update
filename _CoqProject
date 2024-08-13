@@ -1,6 +1,7 @@
 -Q src RecordUpdate
 -arg -w -arg +deprecated-instance-without-locality
 -arg -w -arg +undeclared-scope
+-arg -w -arg -notation-incompatible-prefix
 src/RecordSet.v
 src/RecordUpdate.v
 src/Lens.v
