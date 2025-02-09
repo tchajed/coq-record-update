@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, flake-utils, ... }: let
@@ -32,7 +32,7 @@
     };
 
     packages = {
-      coq-record-update = pkgs.coqPackages_8_19.coq-record-update;
+      coq-record-update = pkgs.coqPackages_8_20.coq-record-update;
       default = self.packages.${system}.coq-record-update;
     };
   }) // {
@@ -44,7 +44,7 @@
           coq-record-update = self.callPackage coq-record-update {};
         });
     in (nixpkgs.lib.mapAttrs injectPkg {
-      inherit (final) coqPackages_8_19;
+      inherit (final) coqPackages_8_20;
     });
   };
 }
