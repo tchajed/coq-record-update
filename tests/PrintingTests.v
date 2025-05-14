@@ -17,3 +17,21 @@ Print setXB.
 
 Definition updateXB (n:Nested) := n <|anX; B::=S|>.
 Print updateXB.
+
+Lemma test_reduction :
+  (mkNested (mkX 2 3) 7) <|aNat := 4|> =
+  mkNested (mkX 2 3) 4.
+Proof.
+  (* this should reduce the LHS to the RHS *)
+  simpl. Show.
+  reflexivity.
+Qed.
+
+Lemma test_reduction2 :
+  (mkNested (mkX 2 3) 7) <|anX := mkX 3 2|> <|aNat := 1|> =
+  mkNested (mkX 3 2) 1.
+Proof.
+  (* this should reduce the LHS to the RHS *)
+  cbn. Show.
+  reflexivity.
+Qed.

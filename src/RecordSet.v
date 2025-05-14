@@ -53,7 +53,10 @@ Local Ltac get_setter T proj :=
 with correctness conditions that require the projected field and only the
 projected field is modified. *)
 Class Setter {R T} (proj: R -> T) := set : (T -> T) -> R -> R.
-Arguments set {R T} proj {Setter}.
+(* This command sets implicits and controls reduction behavior. [set] reduces
+under [simpl] and [cbn] if supplied all its arguments and the last argument (the
+record) is a constructor. *)
+#[global] Arguments set {R T} proj {Setter} _ !_ / : simpl nomatch.
 
 Class SetterWf {R T} (proj: R -> T) :=
   { set_wf : Setter proj;
