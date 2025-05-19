@@ -1,3 +1,4 @@
+From RecordUpdate Require Import RecordEta.
 Set Implicit Arguments.
 
 (** Settable is a way of accessing a constructor for a record of type T. The
@@ -23,6 +24,17 @@ Notation "'settable!' mk < f1 ; .. ; fn >" :=
   (Build_Settable
      (fun x => .. (mk (f1 x)) .. (fn x))
      ltac:(solve_mkT_ok)) (at level 0, mk at level 10, f1, fn at level 9, only parsing).
+
+Ltac solve_settable :=
+  lazymatch goal with
+  | |- Settable ?R =>
+      let eta := RecordEta.eta R in
+      refine (Build_Settable eta ltac:(solve_mkT_ok))
+  | _ => fail "not a Settable goal"
+  end.
+
+#[global]
+Hint Extern 2 (Settable ?R) => solve_settable : typeclass_instances.
 
 (** [setter] creates a setter based on an eta-expanded record constructor and a
 particular field projection proj *)

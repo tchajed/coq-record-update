@@ -5,50 +5,43 @@
 In a nutshell, this library automatically provides a generic way to update record fields. Here's a teaser example:
 
 ```coq
-From RecordUpdate Require Import RecordSet.
+From RecordUpdate Require Import RecordUpdate.
 
 Record X := mkX { A: nat; B: nat; C: bool; }.
 
-(* all you need to do is provide something like this, listing out the fields of your record: *)
-#[export] Instance etaX : Settable _ := settable! mkX <A; B; C>.
-
-(* and now you can set fields! *)
+(* [set] operates on any record, allowing field updates *)
 Definition setAB a b x := set B (fun _ => b) (set A (fun _ => a) x).
 
-(* and do updates that use the old value! *)
+(* These updates can also make use of the original field value: *)
 Definition updateAB a b x := set B (Nat.add b) (set A (Nat.add a) x).
 
-(* you can also use notations for these things: *)
-Import RecordSetNotations.
-Definition setAB' a b x := x <|A := a|> <|B := b|>.
+(* You can also use notations for these things: *)
+Definition setAB' (a: nat) (b: nat) x := x <|A := a|> <|B := b|>.
 Definition updateAB' a b x := x <|A ::= Nat.add a|> <|B ::= Nat.add b|>.
 
-(* the notation also allows you to update nested fields: *)
-Record C := mkC { n : nat }.
-Record B := mkB { c : C }.
-Record A := mkA { b : B }.
+(* The notation also allows you to update nested fields by giving the "path"
+through several records: *)
+Record Inner := mkInner { n : nat }.
+Record Middle := mkMiddle { c : Inner }.
+Record Outer := mkOuter { b : Middle }.
 
-Instance etaC : Settable _ := settable! mkC<n>.
-Instance etaB : Settable _ := settable! mkB<c>.
-Instance etaA : Settable _ := settable! mkA<b>.
-
-Definition setNested n' x := x <| b; c; n := n' |>.
-Definition incNested x := x <| b; c; n ::= S |>.
+Definition setNested n' (x: Outer) := x <| b; c; n := n' |>.
+Definition incNested (x: Outer) := x <| b; c; n ::= S |>.
 ```
 
 Coq has no record update syntax, nor does it create updaters for setting individual fields of a record. This small library automates creating such updaters.
 
-To use the library with a record, one must implement a typeclass `Settable` to provide the syntax for constructing a record from individual fields. This implementation lists out the record's constructor and every field accessor function. If you want to get rid of that boilerplate, you can, but it requires an OCaml plugin so it is provided separately; see [tchajed/coq-record-update-plugin](https://github.com/tchajed/coq-record-update-plugin).
+The library is based on a typeclass `Settable` that constructs a record from individual fields. It constructs this record using Ltac2.
 
-Once `Settable T` is implemented, Coq will be able to resolve the typeclass `Setter F` for all the fields `F` of `T`, so that a generic setter `set T A (F: T -> A) : forall {_:Setter F}, A -> T -> T` works. There is also a notation `x <| proj := v |>` for calling `set proj v x`.
+Using `Settable T`, the library can resolve the typeclass `Setter F` for all the fields `F` of `T`, so that a generic setter `set T A (F: T -> A) : forall {_:Setter F}, A -> T -> T` works. There is also a notation `x <| proj := v |>` for calling `set proj v x`.
 
-As a bonus, the `Setter F` typeclass includes some theorems showing the updater is correct. In addition, `Settable T` has a theorem showing that the fields are listed correctly. Together, these ensure that the library cannot be used incorrectly; for `Setter` this catches potential bugs in the library, while the property in `Settable` ensures that fields aren't listed out-of-order or duplicated.
+As a bonus, the `Setter F` typeclass includes some theorems showing the updater is correct. In addition, `Settable T` has a theorem showing that the fields are listed correctly. Together, these help catch bugs before they result in an incorrect implementation of `Setter`.
 
-# Feedback and contributions
+## Feedback and contributions
 
-If you have feedback or need some improvement to make this library useful to you, **please open an issue**. I do actively maintain it, though that has only required the occasional bug fix for a while.
+If you have feedback or need some improvement to make this library useful to you, **please open an issue**. I do actively maintain it.
 
-# Building and installing
+## Building and installing
 
 To build and install:
 
@@ -59,7 +52,7 @@ make   # or make -j <number-of-cores-on-your-machine>
 make install
 ```
 
-# Wait, what? How does that work?
+## Wait, what? How does that work?
 
 I'm glad you asked! There are three tricks here:
 
