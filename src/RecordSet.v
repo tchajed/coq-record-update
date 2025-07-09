@@ -92,7 +92,7 @@ Local Ltac SetterWfInstance_t :=
       intros ? r; destruct r; reflexivity |
       let f := fresh in
       let r := fresh in
-      intros f r; destruct r; cbv [set]; cbn; congruence ]
+      intros f r; destruct r; cbv [set]; cbn; intros ->; reflexivity ]
   end.
 
 Global Hint Extern 1 (Setter _) => SetterInstance_t : typeclass_instances.

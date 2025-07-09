@@ -18,3 +18,6 @@ Definition do_update_first (x: Rec) (new: unit) : Rec :=
   x <| field1 := tt |>.
 Definition do_update_last (x: Rec) (new: unit) : Rec :=
   x <| field500 := tt |>.
+
+#[local] Instance field1_wf : SetterWf field1.
+Proof. apply _. Qed.
