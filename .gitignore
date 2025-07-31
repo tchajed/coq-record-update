@@ -10,6 +10,8 @@ Makefile.coq
 Makefile.coq.conf
 .coq-native/
 native_compute_profile_*.data
+# dune build files
+_build/
 
 # generated timing files
 *.timing.diff

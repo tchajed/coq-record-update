@@ -1,3 +1,2 @@
-(lang dune 2.5)
-(using coq 0.2)
-(name record-update)
+(lang dune 3.18)
+(using coq 0.10)
