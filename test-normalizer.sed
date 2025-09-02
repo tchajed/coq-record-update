@@ -1,3 +1,5 @@
+# convert Windows line endings to UNIX line endings
+s/\r$//
 # adjust for https://github.com/coq/coq/pull/13656
 s/subgoal/goal/g
 # remove these lines added in https://github.com/coq/coq/pull/14596
