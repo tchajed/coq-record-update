@@ -4,12 +4,11 @@ on:
   push:
     branches:
       - master
-    tags: ['v*']
+    tags: ["v*"]
   pull_request:
   schedule:
     # Tuesday 8am UTC (3am EST)
-    - cron: '0 8 * * TUE'
-
+    - cron: "0 8 * * TUE"
 
 jobs:
   build:
@@ -18,22 +17,21 @@ jobs:
     strategy:
       matrix:
         rocq_version:
-          - 'dev'
-          - '9.2'
-          - '9.1'
-          - '8.20'
-          - '8.19'
-          - '8.18'
-          - '8.17'
-          - '8.16'
+          - "dev"
+          - "9.2"
+          - "9.1"
+          - "8.20"
+          - "8.19"
+          - "8.18"
+          - "8.17"
+          - "8.16"
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: coq-community/docker-coq-action@v1
         with:
-          opam_file: 'coq-record-update.opam'
+          opam_file: "coq-record-update.opam"
           coq_version: ${{ matrix.rocq_version }}
-
 
 # See also:
 # https://github.com/coq-community/docker-coq-action#readme
