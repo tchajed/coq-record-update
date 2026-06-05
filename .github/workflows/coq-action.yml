@@ -18,7 +18,6 @@ jobs:
       matrix:
         rocq_version:
           - "dev"
-          - "9.2"
           - "9.1"
           - "8.20"
           - "8.19"
