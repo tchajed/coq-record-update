@@ -1,0 +1,8 @@
+ordinary_application =
+fun (f : Inner -> Inner) (x : Inner) => f x
+     : (Inner -> Inner) -> Inner -> Inner
+setter_function = set value S
+     : Inner -> Inner
+update_after_application =
+fun x : Inner => reset x <| value := 1 |>
+     : Inner -> Inner

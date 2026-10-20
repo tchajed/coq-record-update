@@ -102,16 +102,25 @@ Module RecordSetNotations.
   Declare Scope record_set.
   Delimit Scope record_set with rs.
   Open Scope rs.
-  Notation "x <| proj  ::=  f |>" := (set proj f x)
-                                     (at level 12, f at next level, left associativity) : record_set.
-  Notation "x <| proj  :=  v |>" := (set proj (fun _ => v) x)
-                                    (at level 12, left associativity) : record_set.
-  Notation "x <| proj1 ; proj2 ; .. ; projn ::= f |>" :=
-    (set proj1 (set proj2 .. (set projn f) ..) x)
-    (at level 12, f at next level, left associativity) : record_set.
-  (* TODO: this notation and the one above have a common prefix. They do still
-  have an effect, so the warning is disabled for now. *)
-  Notation "x <| proj1 ; proj2 ; .. ; projn := v |>" :=
-    (set proj1 (set proj2 .. (set projn (fun _ => v)) ..) x)
-    (at level 12, left associativity) : record_set.
+  (* Keep updates at level 12 so [f x <| proj := v |>] updates [f x].
+     Factoring out the suffix avoids the postfix-notation warning without
+     changing this precedence or disabling the warning. *)
+  Declare Custom Entry record_update.
+  Notation "proj ::= f |>" := (set proj f)
+    (in custom record_update at level 1, proj constr at level 200,
+     f constr at level 11) : record_set.
+  Notation "proj := v |>" := (set proj (fun _ => v))
+    (in custom record_update at level 1, proj constr at level 200,
+     v constr at level 200) : record_set.
+  Notation "proj1 ; proj2 ; .. ; projn ::= f |>" :=
+    (set proj1 (set proj2 .. (set projn f) ..))
+    (in custom record_update at level 1, proj1 constr at level 200,
+     projn constr at level 200, f constr at level 11) : record_set.
+  Notation "proj1 ; proj2 ; .. ; projn := v |>" :=
+    (set proj1 (set proj2 .. (set projn (fun _ => v)) ..))
+    (in custom record_update at level 1, proj1 constr at level 200,
+     projn constr at level 200, v constr at level 200) : record_set.
+  Notation "x <| u" := (u x)
+    (at level 12, u custom record_update at level 1,
+     left associativity) : record_set.
 End RecordSetNotations.
